@@ -463,4 +463,3 @@ const SocialIcon = ({ icon, theme }) => {
 };
 
 export default LandingPage;
-ge;
