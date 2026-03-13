@@ -110,7 +110,11 @@ const Services = () => {
                     setSelectedService(null);
                   }}
                 >
-                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                  {categories.map(c => (
+                    <option key={c} value={c} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
+                      {c}
+                    </option>
+                  ))}
                 </select>
                 <ChevronRight className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-500 rotate-90 pointer-events-none" size={20} />
               </div>
@@ -129,9 +133,9 @@ const Services = () => {
                     setSelectedService(s);
                   }}
                 >
-                  <option value="" disabled>Select a specific unit...</option>
+                  <option value="" disabled className={isDark ? 'bg-slate-900 text-slate-500' : 'bg-white text-slate-400'}>Select a specific unit...</option>
                   {filteredServices.map(s => (
-                    <option key={s._id} value={s._id}>
+                    <option key={s._id} value={s._id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
                       {s.name} — {formatPrice(s.sellingRate)}/1k
                     </option>
                   ))}
