@@ -14,7 +14,7 @@ const Wallet = () => {
   const [gateway, setGateway] = useState('paystack');
 
   const isDark = theme === 'dark';
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
   const handleFunding = async (e) => {
     e.preventDefault();
@@ -24,16 +24,22 @@ const Wallet = () => {
 
     setLoading(true);
     try {
-      const endpoint = gateway === 'paystack' 
-        ? '/payments/paystack/initialize' 
-        : '/payments/flutterwave/initialize';
+       console.log('🔗 Initiating Capital Handshake at:', `${API_URL}/payments/paystack/initialize`);
       
-      const res = await axios.post(`${API_URL}${endpoint}`, { amount: parseFloat(amount) });
+      const res = await axios.post(`${API_URL}/payments/paystack/initialize`, { 
+        amount: parseFloat(amount) 
+      });
       
-      const { authorization_url, link } = res.data.data;
-      window.location.href = authorization_url || link;
+      const { authorization_url } = res.data.data;
+      if (authorization_url) {
+        window.location.href = authorization_url;
+      } else {
+        throw new Error('Gateway did not return an authorization bypass.');
+      }
     } catch (err) {
-      toast.error('Capital Handshake Error: Gateway Offline');
+      const errorMsg = err.response?.data?.message || err.message;
+      console.error('❌ Strategic Handshake Failed:', errorMsg);
+      toast.error(`Capital Handshake Failed: ${errorMsg}`);
     } finally {
       setLoading(false);
     }
