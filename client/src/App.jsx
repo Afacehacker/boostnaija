@@ -13,7 +13,7 @@ import Orders from './pages/Orders';
 import AdminDashboard from './pages/AdminDashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import WhatsAppWidget from './components/WhatsAppWidget';
+import TelegramWidget from './components/TelegramWidget';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
@@ -80,7 +80,7 @@ function App() {
                   </ProtectedRoute>
                 } />
               </Routes>
-              <WhatsAppWidget />
+              <TelegramWidget />
               <MobileBottomNav />
               <ToastContainer position="bottom-right" theme="dark" />
             </div>
