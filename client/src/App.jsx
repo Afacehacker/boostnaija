@@ -38,6 +38,8 @@ const DynamicThemeWrapper = ({ children }) => {
   return children;
 };
 
+import MobileBottomNav from './components/MobileBottomNav';
+
 function App() {
   return (
     <ThemeProvider>
@@ -79,6 +81,7 @@ function App() {
                 } />
               </Routes>
               <WhatsAppWidget />
+              <MobileBottomNav />
               <ToastContainer position="bottom-right" theme="dark" />
             </div>
           </DynamicThemeWrapper>

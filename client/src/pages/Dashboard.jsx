@@ -34,10 +34,10 @@ const Dashboard = () => {
   };
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
-  const subTextColor = isDark ? 'text-slate-400' : 'text-slate-500';
+  const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
-    <div className={`pt-28 px-6 pb-20 max-w-7xl mx-auto font-sans transition-colors duration-500`}>
+    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto font-sans transition-colors duration-500 ${meshBg}`}>
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

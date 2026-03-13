@@ -80,9 +80,10 @@ const Services = () => {
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-400' : 'text-slate-500';
+  const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
-    <div className={`pt-28 px-6 pb-20 max-w-7xl mx-auto transition-colors duration-500`}>
+    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg}`}>
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 mb-16">
         <div>
           <div className="flex items-center gap-2 mb-3">
@@ -93,45 +94,55 @@ const Services = () => {
           <p className={`text-lg font-medium ${subTextColor}`}>Enlist the best engagement units for your social missions.</p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto">
-          {/* Currency Toggle */}
-          <div className={`${isDark ? 'bg-slate-900 border-white/5' : 'bg-slate-100 border-slate-200'} p-1.5 rounded-2xl border flex shadow-sm`}>
-             <button 
-                onClick={() => setCurrency('NGN')}
-                className={`px-6 py-2 rounded-xl text-xs font-black transition-all ${currency === 'NGN' ? 'bg-primary text-white shadow-lg' : isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}
-             >
-                NGN
-             </button>
-             <button 
-                onClick={() => setCurrency('USD')}
-                className={`px-6 py-2 rounded-xl text-xs font-black transition-all ${currency === 'USD' ? 'bg-primary text-white shadow-lg' : isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}
-             >
-                USD
-             </button>
-          </div>
-
-          <div className="relative group flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary" size={20} />
-            <input 
-              type="text" 
-              placeholder="Filter by keyword..." 
-              className={`w-full lg:w-80 border rounded-[1.25rem] py-4 pl-12 pr-6 outline-none focus:border-primary/50 transition-all font-bold text-sm shadow-sm ${isDark ? 'bg-slate-900 border-white/5 text-white placeholder:text-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400'}`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <div className="relative">
-            <select 
-              className={`border rounded-[1.25rem] py-4 px-8 pr-12 outline-none focus:border-primary/50 appearance-none font-black uppercase text-[10px] tracking-widest cursor-pointer shadow-sm ${isDark ? 'bg-slate-900 border-white/5 text-slate-400' : 'bg-white border-slate-200 text-slate-500'}`}
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+      <div className="mb-12">
+        <label className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 block ${subTextColor}`}>Select Department</label>
+        <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0 scroll-smooth">
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setSelectedCategory(c)}
+              className={`whitespace-nowrap px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border ${
+                selectedCategory === c
+                  ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
+                  : isDark
+                  ? 'bg-white/5 border-white/5 text-slate-500 hover:text-white hover:bg-white/10'
+                  : 'bg-white border-slate-100 text-slate-400 hover:text-slate-900 shadow-sm'
+              }`}
             >
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 rotate-90 pointer-events-none" size={16} />
-          </div>
+              {c}
+            </button>
+          ))}
         </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6 mb-16">
+        <div className="relative group flex-1">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary" size={20} />
+          <input 
+            type="text" 
+            placeholder="Search Strategic Units..." 
+            className={`w-full border rounded-[2rem] py-6 pl-16 pr-8 outline-none focus:border-primary/50 transition-all font-bold text-lg shadow-sm ${isDark ? 'bg-slate-900 border-white/5 text-white placeholder:text-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400'}`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        
+        {/* Currency Toggle */}
+        <div className={`${isDark ? 'bg-slate-900 border-white/5' : 'bg-slate-100 border-slate-200 shadow-inner'} p-2 rounded-[2rem] border flex self-start lg:self-center`}>
+           <button 
+              onClick={() => setCurrency('NGN')}
+              className={`px-8 py-4 rounded-[1.5rem] text-[10px] font-black transition-all ${currency === 'NGN' ? 'bg-primary text-white shadow-lg' : isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}
+           >
+              NGN
+           </button>
+           <button 
+              onClick={() => setCurrency('USD')}
+              className={`px-8 py-4 rounded-[1.5rem] text-[10px] font-black transition-all ${currency === 'USD' ? 'bg-primary text-white shadow-lg' : isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}
+           >
+              USD
+           </button>
+        </div>
+      </div>
       </div>
 
       {loading ? (

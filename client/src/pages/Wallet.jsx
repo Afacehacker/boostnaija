@@ -52,10 +52,11 @@ const Wallet = () => {
   };
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
-  const subTextColor = isDark ? 'text-slate-500' : 'text-slate-400';
+  const subTextColor = isDark ? 'text-slate-400' : 'text-slate-500';
+  const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
-    <div className={`pt-28 px-6 pb-20 max-w-7xl mx-auto transition-colors duration-500`}>
+    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg}`}>
       <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
         {/* Intelligence Side */}
         <motion.div
