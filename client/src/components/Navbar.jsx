@@ -41,7 +41,7 @@ const Navbar = () => {
   const borderCol = isDark ? 'border-white/10' : 'border-slate-100';
 
   return (
-    <nav className={`fixed w-full z-50 px-6 py-4 border-b transition-all duration-300 backdrop-blur-md ${navBg} ${borderCol}`}>
+    <nav className={`fixed w-full z-50 px-6 py-4 border-b transition-all duration-300 md:backdrop-blur-md ${navBg} ${borderCol}`}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className={`group flex items-center gap-3 transition-transform hover:scale-105`}>
           <div className="relative">

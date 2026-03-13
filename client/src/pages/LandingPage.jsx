@@ -94,26 +94,10 @@ const LandingPage = () => {
         )}
       </AnimatePresence>
 
-      {/* Floating Elements / Particles Simulation */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-         <motion.div 
-           animate={{ 
-             y: [0, -40, 0], 
-             rotate: [0, 10, 0],
-             scale: [1, 1.1, 1]
-           }} 
-           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-           className="absolute top-1/4 left-10 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" 
-         />
-         <motion.div 
-           animate={{ 
-             y: [0, 50, 0], 
-             rotate: [0, -15, 0],
-             scale: [1, 1.2, 1]
-           }} 
-           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-           className="absolute bottom-1/4 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px]" 
-         />
+      {/* Optimized Background Gradient (Static for Performance) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-50">
+          <div className="absolute top-1/4 left-10 w-64 h-64 bg-primary/10 rounded-full blur-[100px]" />
+          <div className="absolute bottom-1/4 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px]" />
       </div>
 
       {/* Hero Section */}
@@ -158,33 +142,30 @@ const LandingPage = () => {
                 transition={{ duration: 1, delay: 0.2 }}
                 className="lg:w-1/2 relative"
               >
-                 <div className="relative z-10 animate-float">
+                  <div className="relative z-10 animate-float optimize-gpu">
                     <img 
                       src="/social_media_mashup.png" 
                       alt="BoostNaija Social Ecosystem" 
-                      className={`w-full max-w-2xl mx-auto rounded-[4rem] transition-all drop-shadow-[0_35px_35px_rgba(255,102,0,0.2)]`}
+                      loading="lazy"
+                      className={`w-full max-w-2xl mx-auto rounded-[4rem] transition-all drop-shadow-[0_20px_20px_rgba(58,122,254,0.15)]`}
                     />
                     {/* Floating HUD Elements */}
-                    <motion.div 
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 4, repeat: Infinity }}
-                      className={`absolute -top-10 -right-10 glass p-6 rounded-3xl border ${borderCol} shadow-2xl hidden md:block`}
+                    <div 
+                      className={`absolute -top-10 -right-10 glass p-6 rounded-3xl border ${borderCol} shadow-2xl hidden md:block optimize-gpu`}
                     >
                        <TrendingUp className="text-primary mb-2" size={32} />
                        <p className={`text-[10px] font-black ${textColor}`}>VIRALITY SCORE</p>
                        <p className="text-2xl font-black text-green-500">MAXIMIZED</p>
-                    </motion.div>
-                    <motion.div 
-                      animate={{ y: [0, 10, 0] }}
-                      transition={{ duration: 5, repeat: Infinity }}
-                      className={`absolute -bottom-6 -left-10 glass p-6 rounded-3xl border border-white/20 shadow-2xl hidden md:block`}
+                    </div>
+                    <div 
+                      className={`absolute -bottom-6 -left-10 glass p-6 rounded-3xl border border-white/20 shadow-2xl hidden md:block optimize-gpu`}
                     >
                        <div className="flex items-center gap-3 mb-2">
                           <Users className="text-blue-500" size={20} />
                           <p className="text-sm font-black text-white">15k Active Agents</p>
                        </div>
                        <p className="text-[10px] text-white/60 font-medium">Joining the takeover right now...</p>
-                    </motion.div>
+                    </div>
                  </div>
                  {/* Decorative Rings */}
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] border border-primary/10 rounded-full -z-0"></div>
