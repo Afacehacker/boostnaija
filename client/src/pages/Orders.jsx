@@ -13,7 +13,7 @@ const Orders = () => {
   const { theme } = useTheme();
   
   const isDark = theme === 'dark';
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
   useEffect(() => {
     fetchOrders();
@@ -60,7 +60,7 @@ const Orders = () => {
   const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
-    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg}`}>
+    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg} optimize-gpu`}>
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 mb-16">
         <div>
           <div className="flex items-center gap-2 mb-3">
@@ -193,9 +193,9 @@ const Orders = () => {
               return (
                 <motion.div 
                   key={order._id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`p-10 rounded-[3rem] border shadow-2xl transition-all ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}
+                  className={`p-8 rounded-[2.5rem] border shadow-xl transition-all ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}
                 >
                   <div className="flex justify-between items-start mb-8">
                     <span className={`px-5 py-2 rounded-full text-[9px] font-black border flex items-center gap-2 uppercase tracking-widest ${config.bg} ${config.color} ${config.border}`}>

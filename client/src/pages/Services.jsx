@@ -21,7 +21,7 @@ const Services = () => {
   const [currency, setCurrency] = useState('NGN');
 
   const isDark = theme === 'dark';
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
   useEffect(() => {
     fetchServices();

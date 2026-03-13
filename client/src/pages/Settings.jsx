@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { motion } from 'framer-motion';
 import { User, Shield, Bell, Smartphone, Mail, Lock, ChevronRight, Zap, CloudLightning } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const Settings = () => {
   const { user } = useAuth();
@@ -11,7 +12,7 @@ const Settings = () => {
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-500' : 'text-slate-400';
-  const cardBg = isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100';
+  const cardBg = isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100 shadow-xl';
 
   const sections = [
     {
@@ -62,9 +63,14 @@ const Settings = () => {
                  </div>
               </div>
             </div>
-            <button className="btn-primary px-8 py-4 rounded-2xl text-[10px] uppercase font-black tracking-widest">Edit Profile</button>
+            <button 
+              onClick={() => toast.info('Profile encryption active. Changes are currently managed via support.')}
+              className="px-8 py-4 rounded-2xl text-[10px] uppercase font-black tracking-widest bg-primary text-white shadow-lg active:scale-95 transition-all"
+            >
+              Edit Profile
+            </button>
           </div>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px]"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[60px]"></div>
         </motion.div>
 
         {/* Settings Sections */}

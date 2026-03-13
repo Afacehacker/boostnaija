@@ -10,7 +10,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
   const [stats, setStats] = useState({ totalOrders: 0, activeOrders: 0, totalSpent: 0 });
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
   const isDark = theme === 'dark';
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const Dashboard = () => {
               </Link>
            </div>
         </div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[120px] -z-0"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] -z-0"></div>
       </motion.div>
 
       {/* Stats Grid */}

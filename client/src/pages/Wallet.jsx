@@ -56,8 +56,8 @@ const Wallet = () => {
   const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
-    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg}`}>
-      <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
+    <div className={`pt-28 px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg} optimize-gpu`}>
+      <div className="grid lg:grid-cols-2 gap-12 lg:gap-24">
         {/* Intelligence Side */}
         <motion.div
            initial={{ opacity: 0, x: -30 }}
@@ -74,17 +74,17 @@ const Wallet = () => {
             verified by local regulatory standards.
           </p>
 
-          <div className={`rounded-[4rem] border p-12 lg:p-16 mb-12 relative overflow-hidden group shadow-3xl transition-colors ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}>
+          <div className={`rounded-[3rem] border p-10 lg:p-16 mb-12 relative overflow-hidden group shadow-xl transition-colors ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}>
             <div className="relative z-10 text-center">
                <p className={`text-[10px] font-black uppercase tracking-[0.4em] mb-4 ${subTextColor}`}>Current Capital Reserves</p>
-               <h2 className="text-7xl font-black text-primary mb-12 tracking-tighter">₦{user?.walletBalance.toLocaleString()}</h2>
+               <h2 className="text-6xl md:text-7xl font-black text-primary mb-12 tracking-tighter">₦{user?.walletBalance.toLocaleString()}</h2>
                
                <div className={`flex items-center justify-center gap-4 text-xs font-black uppercase tracking-widest p-5 rounded-2xl border ${isDark ? 'bg-white/5 border-white/5 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
                  <ShieldCheck size={24} className="text-green-500"/> 
-                 <span>RSA-4096 Protection Active</span>
+                 <span>Bank-Level Protection Active</span>
                </div>
             </div>
-            <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 blur-[120px] -z-0"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] -z-0"></div>
           </div>
 
           <div className="space-y-10">
@@ -114,10 +114,10 @@ const Wallet = () => {
 
         {/* Deposit Protocol Side */}
         <motion.div
-           initial={{ opacity: 0, x: 30 }}
-           animate={{ opacity: 1, x: 0 }}
+           initial={{ opacity: 0, y: 30 }}
+           animate={{ opacity: 1, y: 0 }}
         >
-          <div className={`p-10 lg:p-16 rounded-[4.5rem] border shadow-3xl relative transition-colors ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200 shadow-2xl'}`}>
+          <div className={`p-8 lg:p-16 rounded-[3.5rem] border shadow-xl relative transition-colors ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}>
             <h3 className={`text-3xl font-black mb-12 flex items-center gap-4 ${textColor}`}>
                <Zap className="text-primary" size={32} /> Reload Protocol
             </h3>
