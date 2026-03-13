@@ -175,12 +175,12 @@ const Services = () => {
                   {/* Target URL */}
                   <div className="space-y-4">
                     <label className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>03. Mission Objective (URL)</label>
-                    <div className="relative">
+                    <div className="relative group">
                       <Globe className="absolute left-6 top-1/2 -translate-y-1/2 text-primary" size={20} />
                       <input 
                         type="url" 
                         placeholder="https://instagram.com/p/..." 
-                        className={`w-full rounded-[2rem] py-6 pl-16 pr-8 border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-100 text-slate-900 shadow-inner'}`}
+                        className={`w-full rounded-[2.5rem] py-8 pl-18 pr-8 border-2 outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
                         value={orderLink}
                         onChange={(e) => setOrderLink(e.target.value)}
                         required
@@ -192,12 +192,12 @@ const Services = () => {
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                       <label className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>04. Engagement Strength</label>
-                      <div className="relative">
+                      <div className="relative group">
                         <Zap className="absolute left-6 top-1/2 -translate-y-1/2 text-primary" size={20} />
                         <input 
                           type="number" 
                           placeholder={`Min: ${selectedService.min}`}
-                          className={`w-full rounded-[2rem] py-6 pl-16 pr-8 border outline-none focus:border-primary transition-all text-2xl font-black ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-100 text-slate-900 shadow-inner'}`}
+                          className={`w-full rounded-[2.5rem] py-8 pl-18 pr-8 border-2 outline-none focus:border-primary transition-all text-2xl font-black ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
                           value={quantity}
                           onChange={(e) => setQuantity(e.target.value)}
                           min={selectedService.min}

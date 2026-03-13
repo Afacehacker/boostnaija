@@ -125,12 +125,12 @@ const Wallet = () => {
             <form onSubmit={handleFunding} className="space-y-12">
               <div className="space-y-4">
                 <label className={`text-[10px] font-black uppercase tracking-[0.3em] ${subTextColor}`}>Allocation Amount (NGN)</label>
-                <div className="relative">
-                  <span className={`absolute left-8 top-1/2 -translate-y-1/2 font-black text-3xl font-sans ${isDark ? 'text-slate-700' : 'text-slate-300'}`}>₦</span>
+                <div className="relative group">
+                  <span className={`absolute left-8 top-1/2 -translate-y-1/2 font-black text-4xl font-sans transition-colors ${isDark ? 'text-primary' : 'text-primary/40'}`}>₦</span>
                   <input 
                     type="number" 
-                    placeholder="Min. 500"
-                    className={`w-full rounded-[2rem] py-8 pl-18 pr-8 outline-none border focus:border-primary transition-all text-4xl font-black placeholder:text-slate-800 tracking-tighter ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900 shadow-inner'}`}
+                    placeholder="500.00"
+                    className={`w-full rounded-[2.5rem] py-10 pl-24 pr-10 outline-none border-2 transition-all text-5xl font-black tracking-tighter ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     required
