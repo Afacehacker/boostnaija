@@ -98,7 +98,7 @@ const LandingPage = () => {
               >
                  <div className="relative z-10 animate-float">
                     <img 
-                      src="/src/assets/hero.png" 
+                      src="/hero.png" 
                       alt="BoostNaija Hero" 
                       className={`w-full max-w-2xl mx-auto rounded-[4rem] shadow-2xl ${isDark ? 'shadow-primary/20' : 'shadow-slate-200'} transition-all`}
                     />
@@ -122,7 +122,7 @@ const LandingPage = () => {
                  
                  {/* Floating Brand Logo In background */}
                  <motion.img 
-                   src="/src/assets/logo_3d.png"
+                   src="/logo_3d.png"
                    animate={{ 
                      y: [0, -30, 0],
                      rotate: [0, 360, 0]

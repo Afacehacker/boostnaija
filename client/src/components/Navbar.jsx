@@ -45,7 +45,7 @@ const Navbar = () => {
         <Link to="/" className={`group flex items-center gap-3 transition-transform hover:scale-105`}>
           <div className="relative">
             <img 
-              src="/src/assets/logo_3d.png" 
+              src="/logo_3d.png" 
               alt="BoostNaija Logo" 
               className="w-10 h-10 object-contain animate-float"
             />
