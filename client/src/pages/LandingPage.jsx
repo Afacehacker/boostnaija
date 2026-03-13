@@ -6,23 +6,88 @@ import {
   ShoppingCart, Star, Zap, Shield, TrendingUp, ChevronRight, 
   CheckCircle2, Users, Globe, Instagram, Twitter, Youtube, 
   MessageCircle, Rocket, Heart, Play, ArrowRight, ShieldCheck,
-  MousePointer2, Sparkles, BarChart3, HelpCircle, ChevronDown
+  MousePointer2, Sparkles, BarChart3, HelpCircle, ChevronDown,
+  X, Send, Tv, Facebook, Camera, Share2
 } from 'lucide-react';
 
 const LandingPage = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const [showPopup, setShowPopup] = useState(false);
   
+  // Show popup on every reload as requested
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPopup(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Dynamic color palette based on theme
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-400' : 'text-slate-600';
-  const cardBg = isDark ? 'bg-slate-900/50' : 'bg-white';
   const borderCol = isDark ? 'border-white/10' : 'border-slate-100';
   const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${meshBg} overflow-hidden font-sans`}>
       
+      {/* Persuasive Welcome Popup */}
+      <AnimatePresence>
+        {showPopup && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              onClick={() => setShowPopup(false)}
+            />
+            <motion.div 
+              initial={{ scale: 0.9, y: 50, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 50, opacity: 0 }}
+              className={`relative w-full max-w-lg p-10 md:p-14 rounded-[4rem] border shadow-3xl overflow-hidden ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+            >
+              <button 
+                onClick={() => setShowPopup(false)}
+                className="absolute top-8 right-8 text-slate-500 hover:text-primary transition-colors"
+              >
+                <X size={28} />
+              </button>
+
+              <div className="text-center space-y-8">
+                 <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center text-primary mx-auto mb-4 border border-primary/20 shadow-2xl">
+                    <Rocket size={40} className="animate-bounce" />
+                 </div>
+                 <h2 className={`text-4xl font-black tracking-tighter ${textColor}`}>Your Influence <br/> Starts <span className="text-primary italic">Now</span></h2>
+                 <p className={`text-lg font-medium leading-relaxed ${subTextColor}`}>
+                    At <span className="text-primary font-black">BoostNaija</span>, we don't just provide numbers; we build <b>Authority</b>. Join 15,000+ elite agents dominating the digital space.
+                 </p>
+                 
+                 <div className="space-y-4">
+                    <Link 
+                      to="/register" 
+                      className="w-full btn-primary py-6 rounded-[2rem] font-black text-xl shadow-2xl block"
+                      onClick={() => setShowPopup(false)}
+                    >
+                      Launch My Growth
+                    </Link>
+                    <a 
+                      href="https://t.me/boostnaija"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full py-6 rounded-[2rem] border-2 font-black text-lg flex items-center justify-center gap-4 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'}`}
+                    >
+                      <Send size={24} className="text-[#0088cc]" /> Join Telegram
+                    </a>
+                 </div>
+                 <p className="text-[10px] uppercase font-black tracking-[0.3em] text-slate-500">Over 1M+ Orders Completed</p>
+              </div>
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 blur-[100px] -z-0"></div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Floating Elements / Particles Simulation */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
          <motion.div 
@@ -55,38 +120,29 @@ const LandingPage = () => {
                 transition={{ duration: 0.8 }}
                 className="lg:w-1/2 text-left"
               >
-                 <div className="inline-flex items-center gap-3 bg-primary/10 text-primary px-5 py-2 rounded-full text-xs font-black tracking-widest uppercase mb-8 border border-primary/20 shadow-lg shadow-primary/5">
+                 <div className="inline-flex items-center gap-3 bg-primary/10 text-primary px-5 py-2 rounded-full text-xs font-black tracking-widest uppercase mb-8 border border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <Sparkles size={16} />
-                    <span>The Future of Social Influence</span>
+                    <span>The Elite SMM Standard 2026</span>
                  </div>
                  
-                 <h1 className={`text-6xl md:text-8xl font-black mb-8 leading-[1.05] tracking-tighter ${textColor}`}>
-                   Experience <br />
-                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-primary">Hyper-Growth</span>
+                 <h1 className={`text-6xl md:text-8xl font-black mb-8 leading-[1.05] tracking-tighter ${textColor} drop-shadow-sm`}>
+                   Stop Posting. <br />
+                   Start <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-primary">Winning.</span>
                  </h1>
                  
                  <p className={`text-xl ${subTextColor} mb-12 max-w-xl leading-relaxed font-medium`}>
-                   Unlock the secret to viral visibility. BoostNaija is the elite SMM engine 
-                   empowering influencers and brands to dominate the digital landscape 
-                   with organic-style engagement and lightning speed.
+                    Why wait for the algorithm when you can lead it? <b>BoostNaija</b> provides the high-octane engagement 
+                    your brand needs to stay top-of-mind and build undeniable social authority.
                  </p>
                  
                  <div className="flex flex-col sm:flex-row items-center gap-6">
-                    <Link to="/register" className="btn-primary w-full sm:w-auto text-lg px-12 py-5 font-black flex items-center justify-center gap-3 group shadow-2xl shadow-primary/30">
-                       Start Your Engine
+                    <Link to="/register" className="btn-primary w-full sm:w-auto text-lg px-12 py-5 font-black flex items-center justify-center gap-3 group shadow-2xl shadow-primary/30 active:scale-95 transition-all">
+                       Deploy My Boost
                        <ArrowRight className="group-hover:translate-x-2 transition-transform" size={20} />
                     </Link>
-                    <div className="flex items-center gap-4 py-2">
-                       <div className="flex -space-x-3">
-                        {[1,2,3,4].map(i => (
-                          <img key={i} src={`https://i.pravatar.cc/150?u=user${i}`} className={`w-12 h-12 rounded-full border-4 ${isDark ? 'border-slate-900' : 'border-white'} object-cover shadow-xl`} alt="user" />
-                        ))}
-                       </div>
-                       <div>
-                          <p className={`text-sm font-black ${textColor}`}>15,000+ Agents</p>
-                          <p className={`text-[10px] font-bold uppercase tracking-widest ${subTextColor}`}>Scaling right now</p>
-                       </div>
-                    </div>
+                    <a href="https://t.me/boostnaija" target="_blank" rel="noopener noreferrer" className={`w-full sm:w-auto py-5 px-10 rounded-[2.5rem] border-2 font-black text-sm flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+                       <Send size={18} className="text-[#0088cc]" /> Support Channel
+                    </a>
                  </div>
               </motion.div>
 
@@ -98,106 +154,126 @@ const LandingPage = () => {
               >
                  <div className="relative z-10 animate-float">
                     <img 
-                      src="/hero.png" 
-                      alt="BoostNaija Hero" 
-                      className={`w-full max-w-2xl mx-auto rounded-[4rem] shadow-2xl ${isDark ? 'shadow-primary/20' : 'shadow-slate-200'} transition-all`}
+                      src="/social_media_mashup_grid_1773372186135.png" 
+                      alt="BoostNaija Social Ecosystem" 
+                      className={`w-full max-w-2xl mx-auto rounded-[4rem] transition-all drop-shadow-[0_35px_35px_rgba(255,102,0,0.2)]`}
                     />
                     {/* Floating HUD Elements */}
-                    <div className={`absolute -top-10 -right-10 glass p-6 rounded-3xl border ${borderCol} shadow-2xl animate-pulse delay-700 hidden md:block`}>
-                       <BarChart3 className="text-primary mb-2" size={32} />
-                       <p className={`text-xs font-black ${textColor}`}>ENGAGEMENT</p>
-                       <p className="text-xl font-black text-green-500">+1,240%</p>
-                    </div>
-                    <div className={`absolute -bottom-6 -left-10 glass p-6 rounded-3xl border border-white/20 shadow-2xl animate-pulse hidden md:block`}>
+                    <motion.div 
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                      className={`absolute -top-10 -right-10 glass p-6 rounded-3xl border ${borderCol} shadow-2xl hidden md:block`}
+                    >
+                       <TrendingUp className="text-primary mb-2" size={32} />
+                       <p className={`text-[10px] font-black ${textColor}`}>VIRALITY SCORE</p>
+                       <p className="text-2xl font-black text-green-500">MAXIMIZED</p>
+                    </motion.div>
+                    <motion.div 
+                      animate={{ y: [0, 10, 0] }}
+                      transition={{ duration: 5, repeat: Infinity }}
+                      className={`absolute -bottom-6 -left-10 glass p-6 rounded-3xl border border-white/20 shadow-2xl hidden md:block`}
+                    >
                        <div className="flex items-center gap-3 mb-2">
-                          <Heart className="text-red-500 fill-red-500" size={20} />
-                          <p className="text-sm font-black text-white">Live Feed</p>
+                          <Users className="text-blue-500" size={20} />
+                          <p className="text-sm font-black text-white">15k Active Agents</p>
                        </div>
-                       <p className="text-[10px] text-white/60 font-medium">New campaign launched for @user_xyz</p>
-                    </div>
+                       <p className="text-[10px] text-white/60 font-medium">Joining the takeover right now...</p>
+                    </motion.div>
                  </div>
                  {/* Decorative Rings */}
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] border border-primary/10 rounded-full -z-0"></div>
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] border border-primary/5 rounded-full -z-0 animate-spin-slow"></div>
-                 
-                 {/* Floating Brand Logo In background */}
-                 <motion.img 
-                   src="/logo_3d.png"
-                   animate={{ 
-                     y: [0, -30, 0],
-                     rotate: [0, 360, 0]
-                   }}
-                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                   className="absolute -top-20 -left-20 w-32 h-32 opacity-20 blur-sm brightness-150 rotate-12 hidden lg:block"
-                 />
               </motion.div>
            </div>
         </div>
       </section>
 
-      {/* Trust & Proof Section */}
-      <section className={`py-12 border-y ${borderCol} ${isDark ? 'bg-white/[0.02]' : 'bg-slate-50'}`}>
-         <div className="container mx-auto px-6">
-            <div className="flex flex-wrap justify-center items-center gap-12 lg:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all">
-               <div className={`flex items-center gap-2 text-2xl font-black ${textColor} italic tracking-tighter`}><Instagram /> INSTAGRAM</div>
-               <div className={`flex items-center gap-2 text-2xl font-black ${textColor} italic tracking-tighter`}><Globe /> TIKTOK</div>
-               <div className={`flex items-center gap-2 text-2xl font-black ${textColor} italic tracking-tighter`}><Youtube /> YOUTUBE</div>
-               <div className={`flex items-center gap-2 text-2xl font-black ${textColor} italic tracking-tighter`}><Twitter /> X / TWITTER</div>
-               <div className={`flex items-center gap-2 text-2xl font-black ${textColor} italic tracking-tighter`}><MessageCircle /> TELEGRAM</div>
+      {/* Convincing Why Section */}
+      <section className="py-24 px-6 relative">
+         <div className="container mx-auto">
+            <div className={`p-12 md:p-24 rounded-[5rem] border ${borderCol} relative overflow-hidden text-center ${isDark ? 'bg-slate-900' : 'bg-white shadow-3xl'}`}>
+               <h2 className={`text-4xl md:text-6xl font-black mb-8 ${textColor}`}>Why Boost with <span className="text-primary italic">Us?</span></h2>
+               <div className="grid md:grid-cols-3 gap-12 text-left">
+                  <div className="space-y-4">
+                     <p className="text-4xl font-black text-primary">01</p>
+                     <h4 className={`text-xl font-black ${textColor}`}>Unmatched Speed</h4>
+                     <p className={subTextColor}>Our proprietary 2026 delivery engine bypasses global queues. Most orders start in under 60 seconds.</p>
+                  </div>
+                  <div className="space-y-4">
+                     <p className="text-4xl font-black text-primary">02</p>
+                     <h4 className={`text-xl font-black ${textColor}`}>Algorithm-Safe</h4>
+                     <p className={subTextColor}>We use drip-feed and intelligent profiles that platform algorithms see as 100% natural engagement.</p>
+                  </div>
+                  <div className="space-y-4">
+                     <p className="text-4xl font-black text-primary">03</p>
+                     <h4 className={`text-xl font-black ${textColor}`}>24/7 War Room</h4>
+                     <p className={subTextColor}>Real support agents in Nigeria standing by on Telegram to ensure your mission succeeds every time.</p>
+                  </div>
+               </div>
+               <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-primary/5 blur-[100px]"></div>
             </div>
          </div>
       </section>
 
-      {/* Feature Grids */}
+      {/* Trust & Proof Section - Redesigned for all social medias */}
+      <section className={`py-20 border-y ${borderCol} ${isDark ? 'bg-white/[0.02]' : 'bg-slate-50'}`}>
+         <div className="container mx-auto px-6">
+            <p className={`text-center text-[10px] font-black uppercase tracking-[0.5em] mb-12 ${subTextColor}`}>Dominate Every Platform</p>
+            <div className="flex flex-wrap justify-center items-center gap-12 lg:gap-20 opacity-60">
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Instagram size={28}/> IG</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Globe size={28}/> TIKTOK</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Facebook size={28}/> FB</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Camera size={28}/> SNAPCHAT</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Twitter size={28}/> X</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Youtube size={28}/> YT</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Tv size={28}/> TWITCH</div>
+               <div className={`flex items-center gap-3 text-xl font-black ${textColor} transition-all hover:text-primary hover:scale-110`}><Send size={28}/> TG</div>
+            </div>
+         </div>
+      </section>
+      
+      {/* Existing Sections Continued... (Rest of the LandingPage content) */}
       <section className="py-32 px-6">
-        <div className="container mx-auto">
-           <div className="text-center mb-24">
-              <h2 className={`text-4xl md:text-6xl font-black mb-6 ${textColor}`}>The Growth <span className="text-primary italic">Paradigm</span></h2>
-              <p className={`max-w-2xl mx-auto text-lg ${subTextColor} font-medium leading-relaxed`}>
-                We've re-engineered the SMM experience. No complications, no delays, 
-                just pure, unadulterated growth at your fingertips.
-              </p>
-           </div>
-
-           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-              <FeatureCard 
-                icon={<Rocket className="text-primary" size={32} />}
-                title="Hyper-Sonic Delivery"
-                desc="Our algorithms prioritize your orders in the global provider queue, ensuring results start appearing in seconds, not hours."
-                theme={theme}
-              />
-              <FeatureCard 
-                icon={<ShieldCheck className="text-primary" size={32} />}
-                title="Safe-Mode Protected"
-                desc="All services are strictly tested against platform TOS. We use drip-feed technology to mimic organic engagement patterns."
-                theme={theme}
-              />
-              <FeatureCard 
-                icon={<BarChart3 className="text-primary" size={32} />}
-                title="Deep Analytics"
-                desc="Track your campaign progression in real-time with our advanced command center. Watch the numbers climb as they happen."
-                theme={theme}
-              />
-              <FeatureCard 
-                icon={<Zap className="text-primary" size={32} />}
-                title="Auto-Refill Engine"
-                desc="Notice a drop? Our smart-engine automatically detects loss and triggers a refill within 24 hours (for supported services)."
-                theme={theme}
-              />
-              <FeatureCard 
-                icon={<Users className="text-primary" size={32} />}
-                title="Agent Support 24/7"
-                desc="Our dedicated Nigerian support team is always online. Real humans helping you scale through WhatsApp and live chat."
-                theme={theme}
-              />
-              <FeatureCard 
-                icon={<Globe className="text-primary" size={32} />}
-                title="Global API Access"
-                desc="Direct integration with the world's most reliable SMM hubs, curated specifically for the Nigerian market rates."
-                theme={theme}
-              />
-           </div>
-        </div>
+         <div className="container mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+               <FeatureCard 
+                 icon={<Rocket className="text-primary" size={32} />}
+                 title="Hyper-Sonic Delivery"
+                 desc="Our algorithms prioritize your orders in the global provider queue, ensuring results start appearing in seconds, not hours."
+                 theme={theme}
+               />
+               <FeatureCard 
+                 icon={<ShieldCheck className="text-primary" size={32} />}
+                 title="Safe-Mode Protected"
+                 desc="All services are strictly tested against platform TOS. We use drip-feed technology to mimic organic engagement patterns."
+                 theme={theme}
+               />
+               <FeatureCard 
+                 icon={<BarChart3 className="text-primary" size={32} />}
+                 title="Deep Analytics"
+                 desc="Track your campaign progression in real-time with our advanced command center. Watch the numbers climb as they happen."
+                 theme={theme}
+               />
+               <FeatureCard 
+                 icon={<Zap className="text-primary" size={32} />}
+                 title="Auto-Refill Engine"
+                 desc="Notice a drop? Our smart-engine automatically detects loss and triggers a refill within 24 hours (for supported services)."
+                 theme={theme}
+               />
+               <FeatureCard 
+                 icon={<Users className="text-primary" size={32} />}
+                 title="Agent Support 24/7"
+                 desc="Our dedicated Nigerian support team is always online. Real humans helping you scale through Telegram and live chat."
+                 theme={theme}
+               />
+               <FeatureCard 
+                 icon={<Globe className="text-primary" size={32} />}
+                 title="Global API Access"
+                 desc="Direct integration with the world's most reliable SMM hubs, curated specifically for the Nigerian market rates."
+                 theme={theme}
+               />
+            </div>
+         </div>
       </section>
 
       {/* Pricing Calculator Mockup / Quick Start */}
@@ -205,8 +281,8 @@ const LandingPage = () => {
          <div className="container mx-auto max-w-5xl">
             <div className={`bg-gradient-to-br ${isDark ? 'from-slate-900 to-black' : 'from-primary/5 to-white'} rounded-[4rem] border ${borderCol} p-12 lg:p-20 shadow-3xl relative overflow-hidden`}>
                <div className="relative z-10 flex flex-col lg:flex-row gap-16 items-center">
-                  <div className="lg:w-1/2">
-                     <h3 className={`text-3xl md:text-5xl font-black mb-8 leading-tight ${textColor}`}>Ready to start <br /> your <span className="text-primary italic">TAKEOVER?</span></h3>
+                  <div className="lg:w-1/2 text-left">
+                     <h3 className={`text-4xl md:text-5xl font-black mb-8 leading-tight ${textColor}`}>Ready to start <br /> your <span className="text-primary italic">TAKEOVER?</span></h3>
                      <p className={`text-lg ${subTextColor} mb-12 font-medium`}>Join 15,000+ Nigerian agents scaling their brands daily. Prices start from just <span className="text-primary font-black">₦50</span>.</p>
                      
                      <div className="space-y-6">
@@ -264,8 +340,8 @@ const LandingPage = () => {
                  theme={theme}
                />
                <FAQItem 
-                 question="Can I get a refund if I'm not satisfied?" 
-                 answer="If an order fails to deliver or gets cancelled by the provider, your wallet is automatically and instantly refunded. Contact support for any specific disputes."
+                 question="How do I reach support?" 
+                 answer="Click the floating Telegram icon or join our official channel @boostnaija for 24/7 assistance from our Nigerian support team."
                  theme={theme}
                />
             </div>
@@ -276,7 +352,7 @@ const LandingPage = () => {
       <footer className={`py-24 border-t ${borderCol} ${isDark ? 'bg-black' : 'bg-slate-50'}`}>
         <div className="container mx-auto px-6">
            <div className="grid lg:grid-cols-4 gap-16 mb-20">
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 text-left">
                  <Link to="/" className={`text-2xl font-black tracking-tighter block mb-8 ${textColor}`}>
                    BOOST<span className="text-primary italic">NAIJA</span>
                  </Link>
@@ -285,10 +361,11 @@ const LandingPage = () => {
                     <SocialIcon icon={<Instagram size={20}/>} theme={theme} />
                     <SocialIcon icon={<Twitter size={20}/>} theme={theme} />
                     <SocialIcon icon={<Youtube size={20}/>} theme={theme} />
+                    <SocialIcon icon={<Send size={20}/>} theme={theme} />
                  </div>
               </div>
               
-              <div>
+              <div className="text-left">
                  <h5 className={`font-black uppercase tracking-widest text-xs mb-8 ${textColor}`}>The Engine</h5>
                  <ul className={`space-y-4 text-sm font-bold ${subTextColor}`}>
                     <li><Link to="/dashboard/services" className="hover:text-primary transition-colors">Service Store</Link></li>
@@ -298,7 +375,7 @@ const LandingPage = () => {
                  </ul>
               </div>
 
-              <div>
+              <div className="text-left">
                  <h5 className={`font-black uppercase tracking-widest text-xs mb-8 ${textColor}`}>Resources</h5>
                  <ul className={`space-y-4 text-sm font-bold ${subTextColor}`}>
                     <li><a href="#" className="hover:text-primary transition-colors">Growth Blog</a></li>
@@ -308,7 +385,7 @@ const LandingPage = () => {
                  </ul>
               </div>
 
-              <div>
+              <div className="text-left">
                  <h5 className={`font-black uppercase tracking-widest text-xs mb-8 ${textColor}`}>Newsletter</h5>
                  <p className={`text-xs ${subTextColor} mb-6 leading-relaxed`}>Get high-yield growth tips delivered to your inbox.</p>
                  <div className="relative">
@@ -336,7 +413,7 @@ const FeatureCard = ({ icon, title, desc, theme }) => {
   return (
     <motion.div 
       whileHover={{ y: -10 }}
-      className={`p-10 rounded-[3rem] border ${isDark ? 'bg-slate-900/50 border-white/5 hover:border-primary/30' : 'bg-white border-slate-100 hover:border-primary/20'} transition-all shadow-xl`}
+      className={`p-10 rounded-[3rem] border ${isDark ? 'bg-slate-900/50 border-white/5 hover:border-primary/30' : 'bg-white border-slate-100 hover:border-primary/20'} transition-all shadow-xl text-left`}
     >
        <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center mb-8 ${isDark ? 'bg-white/5' : 'bg-primary/5'}`}>
          {icon}
@@ -379,10 +456,11 @@ const FAQItem = ({ question, answer, theme }) => {
 const SocialIcon = ({ icon, theme }) => {
   const isDark = theme === 'dark';
   return (
-    <a href="#" className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isDark ? 'bg-white/5 text-white hover:bg-primary' : 'bg-slate-100 text-slate-900 hover:bg-primary hover:text-white'}`}>
+    <a href="https://t.me/boostnaija" target="_blank" rel="noopener noreferrer" className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isDark ? 'bg-white/5 text-white hover:bg-primary' : 'bg-slate-100 text-slate-900 hover:bg-primary hover:text-white'}`}>
       {icon}
     </a>
   );
 };
 
 export default LandingPage;
+ge;
