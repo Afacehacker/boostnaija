@@ -102,7 +102,7 @@ const AdminDashboard = () => {
           <button 
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`pb-6 px-4 text-xs font-black uppercase tracking-[0.3em] transition-all relative ${activeTab === tab ? 'text-primary' : subTextColor + ' hover:text-primary/70'}`}
+            className={`pb-6 px-4 text-xs font-black uppercase tracking-[0.3em] transition-all relative ${activeTab === tab ? 'text-primary' : `${subTextColor} hover:text-primary/70`}`}
           >
             {tab}
             {activeTab === tab && <motion.div layoutId="admintab" className="absolute bottom-0 left-0 w-full h-1.5 bg-primary rounded-full shadow-[0_-4px_20px_#3A7AFE]" />}
