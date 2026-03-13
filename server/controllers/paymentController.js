@@ -34,7 +34,10 @@ exports.initializePaystack = async (req, res) => {
 
     res.status(200).json({ success: true, data: response.data.data });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    const statusCode = err.response?.status || 400;
+    const message = err.response?.data?.message || err.message;
+    console.error(`❌ Paystack Handshake Failed [${statusCode}]:`, message);
+    res.status(statusCode).json({ success: false, message: `Gateway Error: ${message}` });
   }
 };
 

@@ -12,18 +12,25 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return res.status(401).json({ success: false, message: 'Not authorized to access this route' });
+    console.warn('❌ Handshake Blocked: No Security Token provided');
+    return res.status(401).json({ success: false, message: 'Mission Denied: No Security Token' });
   }
 
   try {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      console.warn('❌ Handshake Blocked: Authorized User not found in DB');
+      return res.status(401).json({ success: false, message: 'Mission Denied: User Identity Lost' });
+    }
 
-    req.user = await User.findById(decoded.id);
-
+    req.user = user;
     next();
   } catch (err) {
-    return res.status(401).json({ success: false, message: 'Not authorized to access this route' });
+    console.warn('❌ Handshake Blocked: Token Signature Mismatch or Expired:', err.message);
+    return res.status(401).json({ success: false, message: `Mission Denied: Signature Mismatch (${err.message})` });
   }
 };
 
