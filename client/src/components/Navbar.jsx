@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Menu, X, Wallet, LayoutDashboard, ShoppingCart, LogOut, User as UserIcon, List, Sun, Moon } from 'lucide-react';
+import { Menu, X, Wallet, LayoutDashboard, ShoppingCart, LogOut, User as UserIcon, List, Sun, Moon, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -24,6 +24,7 @@ const Navbar = () => {
         { name: 'Services', path: '/dashboard/services', icon: <ShoppingCart size={18} /> },
         { name: 'Orders', path: '/dashboard/orders', icon: <List size={18} /> },
         { name: 'Wallet', path: '/dashboard/wallet', icon: <Wallet size={18} /> },
+        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
       ]
     : [
         { name: 'Home', path: '/' },
