@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 
 const Wallet = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { theme } = useTheme();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,9 +26,15 @@ const Wallet = () => {
     try {
        console.log('🔗 Initiating Capital Handshake at:', `${API_URL}/payments/paystack/initialize`);
       
-      const res = await axios.post(`${API_URL}/payments/paystack/initialize`, { 
-        amount: parseFloat(amount) 
-      });
+      const res = await axios.post(
+        `${API_URL}/payments/paystack/initialize`, 
+        { amount: parseFloat(amount) },
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          } 
+        }
+      );
       
       const { authorization_url } = res.data.data;
       if (authorization_url) {
