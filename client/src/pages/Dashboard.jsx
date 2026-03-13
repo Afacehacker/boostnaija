@@ -34,6 +34,7 @@ const Dashboard = () => {
   };
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
+  const subTextColor = isDark ? 'text-slate-500' : 'text-slate-400';
   const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
 
   return (
