@@ -45,16 +45,22 @@ const LandingPage = () => {
               initial={{ scale: 0.9, y: 50, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 50, opacity: 0 }}
-              className={`relative w-full max-w-lg p-10 md:p-14 rounded-[4rem] border shadow-3xl overflow-hidden ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+              className={`relative w-full max-w-lg p-10 md:p-14 rounded-[4rem] border shadow-3xl overflow-hidden z-[210] ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+              onClick={(e) => e.stopPropagation()}
             >
               <button 
-                onClick={() => setShowPopup(false)}
-                className="absolute top-8 right-8 text-slate-500 hover:text-primary transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowPopup(false);
+                }}
+                className="absolute top-8 right-8 text-slate-500 hover:text-primary transition-all p-3 z-[220] cursor-pointer active:scale-95 group"
+                type="button"
               >
-                <X size={28} />
+                <X size={32} className="group-hover:rotate-90 transition-transform duration-300" />
               </button>
 
-              <div className="text-center space-y-8">
+              <div className="text-center space-y-8 relative z-10">
                  <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center text-primary mx-auto mb-4 border border-primary/20 shadow-2xl">
                     <Rocket size={40} className="animate-bounce" />
                  </div>
@@ -154,7 +160,7 @@ const LandingPage = () => {
               >
                  <div className="relative z-10 animate-float">
                     <img 
-                      src="/social_media_mashup_grid_1773372186135.png" 
+                      src="/social_media_mashup.png" 
                       alt="BoostNaija Social Ecosystem" 
                       className={`w-full max-w-2xl mx-auto rounded-[4rem] transition-all drop-shadow-[0_35px_35px_rgba(255,102,0,0.2)]`}
                     />
