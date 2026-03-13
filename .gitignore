@@ -1,0 +1,13 @@
+node_modules/
+.env
+.DS_Store
+dist/
+build/
+*.log
+.gemini/
+brain/
+.agents/
+.agent/
+_agents/
+_agent/
+node_modules_corrupt_1/
