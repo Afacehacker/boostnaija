@@ -21,7 +21,7 @@ const MobileBottomNav = () => {
     ];
 
     if (user?.role === 'admin') {
-        navItems.push({ name: 'Admin', path: '/admin', icon: <Settings size={18} /> });
+        navItems.push({ name: 'Admin', path: '/staff-portal-99', icon: <Settings size={18} /> });
     } else {
         navItems.push({ name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> });
     }

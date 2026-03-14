@@ -38,7 +38,7 @@ const AppEnrichment = () => {
       '/dashboard/services': 'Store | Strategic Services',
       '/dashboard/orders': 'Missions | Deployment Logs',
       '/dashboard/settings': 'Settings | Security Protocols',
-      '/admin': 'Admin | Terminal Root Access'
+      '/staff-portal-99': 'Admin | Terminal Root Access'
     };
     
     document.title = titles[pathname] || 'BoostNaija | Premium SMM Nigeria';
@@ -116,7 +116,7 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              <Route path="/admin" element={
+              <Route path="/staff-portal-99" element={
                 <ProtectedRoute adminOnly={true}>
                   <AdminDashboard />
                 </ProtectedRoute>

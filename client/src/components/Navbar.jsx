@@ -32,7 +32,7 @@ const Navbar = () => {
       ];
 
   if (user?.role === 'admin') {
-    navLinks.push({ name: 'Admin', path: '/admin', icon: <UserIcon size={18} /> });
+    navLinks.push({ name: 'Admin', path: '/staff-portal-99', icon: <UserIcon size={18} /> });
   }
 
   const isDark = theme === 'dark';
