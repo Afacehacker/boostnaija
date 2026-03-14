@@ -82,9 +82,10 @@ exports.login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
+    // Auto-verify any old accounts that have correct password but isVerified=false
     if (!user.isVerified) {
-       // Re-send OTP if not verified?
-       return res.status(401).json({ success: false, message: 'Please verify your email first', unverified: true });
+      user.isVerified = true;
+      await user.save({ validateBeforeSave: false });
     }
 
     sendTokenResponse(user, 200, res);
