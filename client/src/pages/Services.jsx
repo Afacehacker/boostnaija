@@ -71,6 +71,21 @@ const Services = () => {
     return `₦${price.toLocaleString()}`;
   };
 
+  const normalizeText = (text) => {
+    if (!text) return '';
+    return text.toString()
+      .normalize('NFKD')
+      .replace(/[\u{1D400}-\u{1D7FF}]/gu, char => {
+        const code = char.codePointAt(0);
+        if (code >= 0x1D400 && code <= 0x1D419) return String.fromCharCode(code - 0x1D400 + 65);
+        if (code >= 0x1D41A && code <= 0x1D433) return String.fromCharCode(code - 0x1D41A + 97);
+        if (code >= 0x1D5D4 && code <= 0x1D5ED) return String.fromCharCode(code - 0x1D5D4 + 65);
+        if (code >= 0x1D5EE && code <= 0x1D607) return String.fromCharCode(code - 0x1D5EE + 97);
+        return char;
+      })
+      .toLowerCase();
+  };
+
   const filteredServices = services
     .filter(s => {
       const matchesCategory = selectedCategory ? s.category === selectedCategory : true;
@@ -78,9 +93,12 @@ const Services = () => {
       let matchesSearch = true;
       if (searchTerm) {
         const words = searchTerm.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+        const normName = normalizeText(s.name);
+        const normCat = normalizeText(s.category);
+        
         matchesSearch = words.every(word => 
-          s.name.toLowerCase().includes(word) || 
-          s.category.toLowerCase().includes(word)
+          normName.includes(word) || 
+          normCat.includes(word)
         );
       }
       
@@ -92,9 +110,12 @@ const Services = () => {
     ? services
         .filter(s => {
           const words = searchTerm.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+          const normName = normalizeText(s.name);
+          const normCat = normalizeText(s.category);
+          
           return words.every(word => 
-            s.name.toLowerCase().includes(word) || 
-            s.category.toLowerCase().includes(word)
+            normName.includes(word) || 
+            normCat.includes(word)
           );
         })
         .sort((a, b) => a.sellingRate - b.sellingRate)
