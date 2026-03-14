@@ -180,7 +180,9 @@ const LandingPage = () => {
                </div>
                <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
                   <div className="w-12 h-12 flex items-center justify-center bg-black rounded-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/TikTok_logo.svg/2560px-TikTok_logo.svg.png" className="w-8 h-auto" alt="tiktok" />
+                    <svg viewBox="0 0 48 48" className="w-8 h-8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M34.1 9A8.9 8.9 0 0 1 32 3h-6.5v28.6a4.4 4.4 0 1 1-3-4.1V21a11 11 0 1 0 9.5 10.9V20.1a15.2 15.2 0 0 0 8.9 2.8v-6.4A8.9 8.9 0 0 1 34.1 9Z" fill="white"/>
+                    </svg>
                   </div>
                   <span className="text-[10px] font-black tracking-widest">TIKTOK</span>
                </div>

@@ -8,11 +8,9 @@ import { toast } from 'react-toastify';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const [otpMode, setOtpMode] = useState(false);
-  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { register, verify } = useAuth();
+  const { register } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const isDark = theme === 'dark';
@@ -22,8 +20,8 @@ const Register = () => {
     setLoading(true);
     try {
       await register(formData.name, formData.email, formData.password);
-      toast.success('Verification code sent to your email!');
-      setOtpMode(true);
+      toast.success('Welcome to BoostNaija! 🇳🇬 Let\'s grow your brand!');
+      navigate('/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally {
@@ -31,23 +29,9 @@ const Register = () => {
     }
   };
 
-  const handleVerify = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await verify(formData.email, otp);
-      toast.success('Account verified! Welcome to BoostNaija.');
-      navigate('/dashboard');
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Verification failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const steps = [
     { icon: <User size={20} />, title: "Create Profile", desc: "Set up your account in seconds" },
-    { icon: <Zap size={20} />, title: "Verify Email", desc: "Receive a secure code in your inbox" },
+    { icon: <Zap size={20} />, title: "Fund Your Wallet", desc: "Top up with any amount you want" },
     { icon: <ShieldCheck size={20} />, title: "Start Boosting", desc: "Access 1,000+ premium SMM services" }
   ];
 
@@ -89,7 +73,6 @@ const Register = () => {
       {/* Right Side: Form */}
       <div className={`w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-24 relative ${isDark ? 'bg-background-dark' : 'bg-white'}`}>
         <AnimatePresence mode="wait">
-          {!otpMode ? (
             <motion.div 
                key="register"
                initial={{ opacity: 0, x: 20 }}
@@ -152,7 +135,7 @@ const Register = () => {
                   disabled={loading}
                   className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-50 group"
                 >
-                  {loading ? 'Creating Account...' : 'Register Now'}
+                  {loading ? 'Creating Account...' : 'Join BoostNaija 🚀'}
                   <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
                 </button>
               </form>
@@ -162,54 +145,7 @@ const Register = () => {
                 <Link to="/login" className="text-primary font-black hover:underline decoration-2 underline-offset-4">Login Here</Link>
               </p>
             </motion.div>
-          ) : (
-            <motion.div 
-               key="otp"
-               initial={{ opacity: 0, x: 20 }}
-               animate={{ opacity: 1, x: 0 }}
-               className="w-full max-w-md pt-20 lg:pt-0"
-            >
-               <div className="mb-12">
-                  <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center text-primary mb-8 border border-primary/20">
-                     <Shield size={40} />
-                  </div>
-                  <h2 className={`text-5xl font-black mb-4 tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'}`}>Verify Email</h2>
-                  <p className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>We've sent a 6-digit code to <span className="text-primary font-bold">{formData.email}</span>. Check your inbox (or spam).</p>
-               </div>
-
-               <form onSubmit={handleVerify} className="space-y-8">
-                  <div className="space-y-3">
-                     <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Verification Code</label>
-                     <input 
-                        type="text" 
-                        required
-                        maxLength="6"
-                        className={`w-full text-center text-4xl tracking-[0.5em] lg:tracking-[1em] ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'} border rounded-2xl py-6 outline-none focus:border-primary transition-all font-black`}
-                        placeholder="000000"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                     />
-                  </div>
-
-                  <button 
-                     disabled={loading}
-                     className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-50 group"
-                  >
-                     {loading ? 'Verifying...' : 'Verify & Continue'}
-                     <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
-                  </button>
-
-                  <button 
-                     type="button"
-                     onClick={() => setOtpMode(false)}
-                     className={`w-full py-4 text-xs font-black uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-400'} hover:text-primary transition-colors`}
-                  >
-                     Change Email Address
-                  </button>
-               </form>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
       </div>
     </div>
   );

@@ -15,52 +15,16 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    // Generate Verification Token (OTP)
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
-
-    // Create user (unverified)
+    // Create user (auto-verified - no email OTP needed on registration)
     user = await User.create({
       name,
       email,
       password,
-      verificationToken: otp,
-      verificationTokenExpire: otpExpire,
-      isVerified: false
+      isVerified: true   // auto-verify on registration
     });
 
-    // Send Email
-    const html = `
-      <div style="font-family: sans-serif; padding: 20px; color: #333;">
-        <h2 style="color: #3A7AFE;">Welcome to BoostNaija!</h2>
-        <p>Hello <b>${name}</b>,</p>
-        <p>Thank you for enlisting with Nigeria's #1 Social Growth Hub. To complete your registration, please use the verification code below:</p>
-        <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;">
-          <h1 style="letter-spacing: 5px; color: #3A7AFE; margin: 0;">${otp}</h1>
-        </div>
-        <p>This code expires in 10 minutes. If you didn't request this, please ignore this email.</p>
-        <p>Best regards,<br/>The BoostNaija Team</p>
-      </div>
-    `;
-
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'BoostNaija - Verify Your Account',
-        html
-      });
-
-      res.status(201).json({ 
-        success: true, 
-        message: 'Verification code sent to email',
-        email: user.email
-      });
-    } catch (err) {
-      user.verificationToken = undefined;
-      user.verificationTokenExpire = undefined;
-      await user.save({ validateBeforeSave: false });
-      return res.status(500).json({ success: false, message: 'Email could not be sent' });
-    }
+    // Immediately sign in the user
+    sendTokenResponse(user, 201, res);
 
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
