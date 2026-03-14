@@ -17,6 +17,7 @@ export default {
           light: "#60A5FA",
         },
         accent: {
+          DEFAULT: "#00F2FE",
           success: "#22C55E",
           warning: "#F59E0B",
           danger: "#EF4444",
