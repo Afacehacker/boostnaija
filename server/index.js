@@ -67,6 +67,49 @@ const connectDB = async () => {
   }
 };
 
+// Auto-sync services from provider on every startup
+const autoSyncServices = async () => {
+  try {
+    const Service = require('./models/Service');
+    const smmApiService = require('./services/smmApiService');
+    const profitMargin = parseFloat(process.env.PROFIT_MARGIN) || 1.60;
+
+    console.log('[Auto-Sync] Fetching services from provider...');
+    const externalServices = await smmApiService.getServices();
+
+    if (!Array.isArray(externalServices) || externalServices.length === 0) {
+      console.warn('[Auto-Sync] No services returned from provider — skipping sync.');
+      return;
+    }
+
+    let count = 0;
+    for (const s of externalServices) {
+      if (!s.service || !s.name) continue;
+      const costRate    = parseFloat(s.rate) || 0;
+      const sellingRate = parseFloat((costRate * profitMargin).toFixed(4));
+
+      await Service.findOneAndUpdate(
+        { externalId: s.service.toString() },
+        {
+          externalId:  s.service.toString(),
+          name:        s.name,
+          category:    s.category || 'General',
+          rate:        costRate,
+          sellingRate: sellingRate,
+          min:         parseInt(s.min)  || 0,
+          max:         parseInt(s.max)  || 0,
+          active:      true,
+        },
+        { upsert: true, new: true }
+      );
+      count++;
+    }
+    console.log(`[Auto-Sync] ✅ ${count} services synced (${((profitMargin - 1) * 100).toFixed(0)}% profit applied).`);
+  } catch (err) {
+    console.error('[Auto-Sync] ⚠️ Service sync failed (server still running):', err.message);
+  }
+};
+
 // Start server
 const PORT = process.env.PORT || 5000;
 
@@ -75,6 +118,9 @@ const startServer = async () => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
   });
+  // Sync services in the background after server is up
+  autoSyncServices();
 };
 
 startServer();
+
