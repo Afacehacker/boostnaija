@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { ShoppingBag, Info, AlertTriangle, ChevronRight, Zap, Target, Globe, CloudLightning, ShieldCheck, ZapOff } from 'lucide-react';
+import { ShoppingBag, Info, AlertTriangle, ChevronRight, Zap, Target, Globe, CloudLightning, ShieldCheck, ZapOff, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,7 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
   const [orderLoading, setOrderLoading] = useState(false);
   const [currency, setCurrency] = useState('NGN');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const isDark = theme === 'dark';
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -70,7 +71,21 @@ const Services = () => {
     return `₦${price.toLocaleString()}`;
   };
 
-  const filteredServices = services.filter(s => s.category === selectedCategory);
+  const filteredServices = services.filter(s => {
+    const matchesCategory = selectedCategory ? s.category === selectedCategory : true;
+    const matchesSearch = searchTerm 
+      ? s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        s.category.toLowerCase().includes(searchTerm.toLowerCase())
+      : true;
+    return matchesCategory && matchesSearch;
+  });
+
+  const allFilteredServices = searchTerm 
+    ? services.filter(s => 
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        s.category.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : filteredServices;
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-400' : 'text-slate-500';
@@ -97,6 +112,24 @@ const Services = () => {
           className={`p-8 md:p-14 rounded-[4rem] border transition-all shadow-3xl overflow-hidden relative ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}
         >
           <form onSubmit={handlePlaceOrder} className="space-y-12 relative z-10">
+            {/* Search Bar */}
+            <div className="space-y-4">
+              <label className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>Quick Search Intel</label>
+              <div className="relative group">
+                <Search className={`absolute left-6 top-1/2 -translate-y-1/2 transition-colors ${isDark ? 'text-slate-700 group-focus-within:text-primary' : 'text-slate-300'}`} size={20} />
+                <input 
+                  type="text" 
+                  placeholder="e.g. 'TikTok Followers', 'Instagram Likes'..." 
+                  className={`w-full rounded-[2rem] py-6 pl-16 pr-10 border outline-none focus:border-primary transition-all font-bold text-lg ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-800' : 'bg-slate-50 border-slate-100 text-slate-900 shadow-inner'}`}
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    if (e.target.value) setSelectedCategory(''); // Clear category when searching to show global results
+                  }}
+                />
+              </div>
+            </div>
+
             {/* Category Dropdown */}
             <div className="space-y-4">
               <label className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>01. Select Department</label>
@@ -108,8 +141,10 @@ const Services = () => {
                   onChange={(e) => {
                     setSelectedCategory(e.target.value);
                     setSelectedService(null);
+                    setSearchTerm(''); // Clear search when picking category
                   }}
                 >
+                  <option value="">All Departments (Global Database)</option>
                   {categories.map(c => (
                     <option key={c} value={c} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
                       {c}
@@ -121,7 +156,7 @@ const Services = () => {
             </div>
 
             {/* Service Dropdown */}
-            <div className={`space-y-4 transition-all ${!selectedCategory ? 'opacity-20 pointer-events-none grayscale' : ''}`}>
+            <div className={`space-y-4 transition-all ${(!selectedCategory && !searchTerm) ? 'opacity-20 pointer-events-none grayscale' : ''}`}>
               <label className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>02. Choose Strategic Service</label>
               <div className="relative group">
                 <CloudLightning className="absolute left-6 top-1/2 -translate-y-1/2 text-primary" size={20} />
@@ -129,12 +164,14 @@ const Services = () => {
                   className={`w-full appearance-none rounded-[2rem] py-6 pl-16 pr-10 border outline-none focus:border-primary transition-all font-bold text-sm cursor-pointer ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-100 text-slate-900 shadow-inner'}`}
                   value={selectedService?._id || ''}
                   onChange={(e) => {
-                    const s = filteredServices.find(srv => srv._id === e.target.value);
+                    const s = allFilteredServices.find(srv => srv._id === e.target.value);
                     setSelectedService(s);
                   }}
                 >
-                  <option value="" disabled className={isDark ? 'bg-slate-900 text-slate-500' : 'bg-white text-slate-400'}>Select a specific unit...</option>
-                  {filteredServices.map(s => (
+                  <option value="" disabled className={isDark ? 'bg-slate-900 text-slate-500' : 'bg-white text-slate-400'}>
+                    {searchTerm ? `Found ${allFilteredServices.length} units for "${searchTerm}"...` : 'Select a specific unit...'}
+                  </option>
+                  {allFilteredServices.map(s => (
                     <option key={s._id} value={s._id} className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>
                       {s.name} — {formatPrice(s.sellingRate)}/1k
                     </option>
