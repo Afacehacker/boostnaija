@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { 
   ShoppingBag, Info, AlertTriangle, ChevronRight, Zap, Target, 
   Globe, CloudLightning, ShieldCheck, ZapOff, Search, Cpu,
-  Database, Activity, Rocket, Clock, Heart, Plus
+  Database, Activity, Rocket, Clock, Heart, Plus, List
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';

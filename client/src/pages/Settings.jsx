@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Shield, Bell, Smartphone, Mail, Lock, ChevronRight, 
   Zap, CloudLightning, Fingerprint, Activity, ShieldAlert,
-  Terminal, Globe, Cpu, Key, LogOut, Settings as SettingsIcon
+  Terminal, Globe, Cpu, Key, LogOut, Settings as SettingsIcon, ShieldCheck
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
