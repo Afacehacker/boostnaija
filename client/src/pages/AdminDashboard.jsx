@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
 import { 
-  Users, ShoppingBag, BarChart3, RefreshCw, Settings, UserPlus, 
+  Users, BarChart3, RefreshCw, Settings, UserPlus, 
   DollarSign, Activity, Database, ShieldAlert, TrendingUp, Search, 
   Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers
 } from 'lucide-react';
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
       const usersRes = await axios.get(`${API_URL}/admin/users`);
       setUsers(usersRes.data.data);
     } catch (err) {
-      toast.error('System Access Denied: Admin Handshake Required');
+      toast.error('Failed to load admin data');
     } finally {
       setLoading(false);
     }
@@ -41,21 +41,21 @@ const AdminDashboard = () => {
 
   const syncServices = async () => {
     try {
-      toast.info('Rebuilding Global Provider Database...');
+      toast.info('Syncing services with provider...');
       await axios.post(`${API_URL}/services/sync`);
-      toast.success('Core DB Synced with SMM.com.ng');
+      toast.success('Services synchronized successfully');
     } catch (err) {
-      toast.error('Provider API Refused Handshake');
+      toast.error('Failed to sync services');
     }
   };
 
   const adjustBalance = async (userId, amount) => {
     try {
       await axios.put(`${API_URL}/admin/users/${userId}/balance`, { amount });
-      toast.success('Ledger Entry Synchronized');
+      toast.success('Balance updated successfully');
       fetchAdminData();
     } catch (err) {
-      toast.error('Database Write Operation Failed');
+      toast.error('Failed to update balance');
     }
   };
 
@@ -64,77 +64,50 @@ const AdminDashboard = () => {
   const meshBg = isDark ? 'bg-cyber-mesh' : 'bg-light-mesh';
 
   if (loading && !stats) return (
-    <div className={`fixed inset-0 flex flex-col items-center justify-center gap-10 z-50 ${isDark ? 'bg-background-dark' : 'bg-background-light'}`}>
-       <div className="relative">
-          <div className="w-32 h-32 border-[8px] border-primary/20 rounded-full"></div>
-          <div className="absolute inset-0 w-32 h-32 border-[8px] border-primary border-t-transparent rounded-full animate-spin shadow-[0_0_30px_#3A7AFE]"></div>
-          <Lock className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary animate-pulse" size={32} />
-       </div>
-       <div className="text-center space-y-4">
-          <h2 className="text-2xl font-black text-primary uppercase tracking-[0.5em] animate-pulse">DECRYPTING ROOT SESSION</h2>
-          <div className="flex gap-2 justify-center">
-             {[1,2,3,4,5].map(i => (
-                <motion.div 
-                  key={i} 
-                  animate={{ opacity: [0.2, 1, 0.2] }} 
-                  transition={{ repeat: Infinity, duration: 1, delay: i * 0.1 }}
-                  className="w-2 h-2 bg-primary rounded-full"
-                ></motion.div>
-             ))}
-          </div>
-          <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${subTextColor}`}>Security Clearances: Level 5 Root Access</p>
-       </div>
+    <div className={`fixed inset-0 flex flex-col items-center justify-center gap-8 z-50 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+       <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+       <p className="font-bold text-primary uppercase tracking-widest text-sm animate-pulse">Loading Admin Panel...</p>
     </div>
   );
 
   return (
-    <div className={`pt-32 px-6 pb-40 min-h-screen transition-colors duration-500 ${meshBg}`}>
+    <div className={`pt-24 md:pt-32 px-4 md:px-6 pb-40 min-h-screen transition-colors duration-500 ${meshBg}`}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12 mb-20">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-16">
           <div>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-3 glass-panel px-6 py-2 rounded-xl text-[10px] font-black tracking-[0.4em] text-primary mb-6 border-primary/20"
-            >
-               <ShieldAlert size={14} /> LEVEL 5 ROOT ACCESS
-            </motion.div>
-            <h1 className={`text-6xl md:text-8xl font-black mb-4 leading-none tracking-tighter ${textColor}`}>
-              COMMAND <span className="text-gradient italic">CENTER</span>
+            <h1 className={`text-4xl md:text-6xl font-black mb-2 ${textColor}`}>
+              Admin <span className="text-primary italic">Panel</span>
             </h1>
-            <p className={`text-xl font-medium italic ${subTextColor} max-w-2xl`}>Master control node for the global <span className="text-primary font-black uppercase tracking-widest italic">Nexus Infrastructure</span>.</p>
+            <p className={`text-lg font-medium ${subTextColor}`}>Manage your platform users and track performance.</p>
           </div>
           
           <div className="flex flex-wrap gap-4 w-full lg:w-auto">
             <button 
               onClick={syncServices} 
-              className="btn-primary group flex-1 lg:flex-none flex items-center justify-center gap-5 px-10 py-6 rounded-[2rem] text-[11px] font-black uppercase tracking-widest shadow-3xl text-white outline-none active:scale-95 transition-all"
+              className="btn-primary flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all"
             >
-              <Database size={20} className="group-hover:rotate-12 transition-transform" /> RE-SYNC PROVIDER CORE
+              <Database size={18} /> Sync Services
             </button>
             <button 
               onClick={fetchAdminData} 
-              className={`p-6 rounded-[2rem] border transition-all shadow-xl group ${isDark ? 'glass-panel border-white/10 hover:bg-white/10' : 'bg-white border-slate-200 hover:bg-slate-50'}`}
+              className={`p-4 rounded-2xl border transition-all ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}
             >
-              <RefreshCw size={28} className={`${loading ? 'animate-spin' : 'group-hover:rotate-180'} text-primary transition-all duration-700`} />
+              <RefreshCw size={24} className={`${loading ? 'animate-spin' : ''} text-primary`} />
             </button>
           </div>
         </div>
 
-        {/* Tactical Navigation Tabs */}
-        <div className={`flex gap-16 mb-20 border-b overflow-x-auto no-scrollbar transition-colors ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-          {['overview', 'agents', 'missions'].map(tab => (
+        {/* Tabs */}
+        <div className={`flex gap-8 mb-12 border-b overflow-x-auto no-scrollbar ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
+          {['overview', 'users', 'status'].map(tab => (
             <button 
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-8 px-6 text-[11px] font-black uppercase tracking-[0.5em] transition-all relative whitespace-nowrap ${activeTab === tab ? 'text-primary' : `${subTextColor} hover:text-primary/70`}`}
+              className={`pb-4 px-4 text-[11px] font-bold uppercase tracking-widest transition-all relative whitespace-nowrap ${activeTab === tab ? 'text-primary' : `${subTextColor} hover:text-primary`}`}
             >
-              {tab === 'overview' && <BarChart3 className="inline-block mr-3" size={16} />}
-              {tab === 'agents' && <Users className="inline-block mr-3" size={16} />}
-              {tab === 'missions' && <Activity className="inline-block mr-3" size={16} />}
               {tab}
               {activeTab === tab && (
-                <motion.div layoutId="admintab" className="absolute bottom-0 left-0 w-full h-2 bg-primary rounded-full shadow-[0_-4px_30px_#3A7AFE]" />
+                <motion.div layoutId="admintab" className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-full shadow-[0_0_10px_#3A7AFE]" />
               )}
             </button>
           ))}
@@ -146,28 +119,18 @@ const AdminDashboard = () => {
               key="overview"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-24"
+              className="space-y-16"
             >
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
-                <AdminStatCard icon={<Users />} label="ACTIVE AGENTS" value={stats.stats.totalUsers} color="#3A7AFE" theme={theme} />
-                <AdminStatCard icon={<Layers />} label="TOTAL MISSIONS" value={stats.stats.totalOrders} color="#3B82F6" theme={theme} />
-                <AdminStatCard icon={<TrendingUp />} label="GROSS REVENUES" value={`₦${stats.stats.revenue.toLocaleString()}`} color="#22C55E" theme={theme} />
-                <AdminStatCard icon={<DollarSign />} label="PANEL RESERVES" value={`$${stats.stats.panelBalance || '0.00'}`} color="#F59E0B" theme={theme} />
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <AdminStatCard icon={<Users />} label="Total Users" value={stats.stats.totalUsers} color="#3A7AFE" theme={theme} />
+                <AdminStatCard icon={<Layers />} label="Total Orders" value={stats.stats.totalOrders} color="#3B82F6" theme={theme} />
+                <AdminStatCard icon={<TrendingUp />} label="Revenue" value={`₦${stats.stats.revenue.toLocaleString()}`} color="#22C55E" theme={theme} />
+                <AdminStatCard icon={<DollarSign />} label="Panel Balance" value={`$${stats.stats.panelBalance || '0.00'}`} color="#F59E0B" theme={theme} />
               </div>
 
-              <div className={`border p-12 lg:p-20 rounded-[5rem] min-h-[650px] shadow-3xl relative overflow-hidden group transition-all ${isDark ? 'glass-panel border-white/5' : 'bg-white border-slate-100'}`}>
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-20 relative z-10">
-                   <div>
-                      <h3 className={`text-4xl font-black mb-3 ${textColor} italic`}>NEURAL DATA STREAM</h3>
-                      <p className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>Live Strategic Performance Monitoring Grid</p>
-                   </div>
-                   <div className="flex items-center gap-4 text-[10px] font-black text-green-500 bg-green-500/10 px-8 py-4 rounded-2xl border border-green-500/10 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
-                      <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22C55E]"></div>
-                      AUTO-SCALING NODE 01 ACTIVE
-                   </div>
-                </div>
-                <div className="h-[400px] relative z-10">
+              <div className={`p-8 md:p-12 rounded-[2.5rem] border shadow-xl relative overflow-hidden ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}>
+                <h3 className={`text-2xl font-black mb-8 ${textColor}`}>Performance Chart</h3>
+                <div className="h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={[
                       { name: 'MON', revenue: 4200 },
@@ -188,90 +151,78 @@ const AdminDashboard = () => {
                         contentStyle={{ 
                           backgroundColor: isDark ? 'rgba(15,17,21,0.9)' : 'rgba(255,255,255,0.9)', 
                           border: 'none',
-                          borderRadius: '24px',
-                          boxShadow: '0 40px 80px rgba(0,0,0,0.3)',
-                          backdropFilter: 'blur(20px)',
-                          padding: '20px'
+                          borderRadius: '16px',
+                          padding: '16px'
                         }} 
-                        itemStyle={{ color: '#3A7AFE', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase' }}
                       />
-                      <XAxis dataKey="name" stroke={isDark ? "#475569" : "#94a3b8"} fontSize={10} fontWeight="900" tickLine={false} axisLine={false} dy={20} />
-                      <Area type="monotone" dataKey="revenue" stroke="#3A7AFE" strokeWidth={8} fillOpacity={1} fill="url(#colorRev)" />
+                      <XAxis dataKey="name" stroke={isDark ? "#475569" : "#94a3b8"} fontSize={10} fontWeight="bold" tickLine={false} axisLine={false} />
+                      <Area type="monotone" dataKey="revenue" stroke="#3A7AFE" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
                     </AreaChart>
                   </ResponsiveContainer>
-                </div>
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[180px] -z-0"></div>
-                <div className="absolute -bottom-20 -left-20 pointer-events-none opacity-5">
-                   <Globe size={400} className="text-primary" />
                 </div>
               </div>
             </motion.div>
           )}
 
-          {activeTab === 'agents' && (
+          {activeTab === 'users' && (
             <motion.div 
-              key="agents"
+              key="users"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={`border rounded-[5rem] overflow-hidden shadow-3xl relative transition-all ${isDark ? 'glass-panel border-white/10' : 'bg-white border-slate-100'}`}
+              className={`border rounded-[2rem] overflow-hidden shadow-xl ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-100'}`}
             >
-              <div className="p-12 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-10">
-                 <div>
-                    <h3 className={`text-4xl font-black mb-2 ${textColor}`}>AGENT DIRECTORY</h3>
-                    <p className={`text-[10px] font-black uppercase tracking-[0.4em] ${subTextColor}`}>ENLISTED OPERATIVE DATABASE</p>
-                 </div>
-                 <div className="relative group w-full md:w-[450px]">
-                    <Search className={`absolute left-8 top-1/2 -translate-y-1/2 transition-colors ${isDark ? 'group-focus-within:text-primary text-slate-700' : 'text-slate-300'}`} size={24} />
+              <div className="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                 <h3 className={`text-2xl font-black ${textColor}`}>User Directory</h3>
+                 <div className="relative w-full md:w-96">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input 
                       type="text" 
-                      placeholder="FILTER BY CODENAME OR UPLINK..." 
-                      className={`w-full rounded-[2.5rem] py-8 pl-20 pr-10 border-2 outline-none focus:border-primary/50 transition-all font-black text-xs uppercase tracking-widest ${isDark ? 'bg-white/5 border-white/5 text-white placeholder:text-slate-800' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-400 shadow-inner'}`}
+                      placeholder="Search users..." 
+                      className={`w-full rounded-xl py-4 pl-12 pr-6 border outline-none focus:border-primary transition-all font-bold text-sm ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900 shadow-inner'}`}
                       value={searchUser}
                       onChange={(e) => setSearchUser(e.target.value)}
                     />
                  </div>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-left min-w-[1200px]">
+                <table className="w-full text-left min-w-[1000px]">
                   <thead>
                     <tr className={isDark ? 'bg-white/5' : 'bg-slate-50'}>
-                      <th className={`py-12 px-12 font-black text-[11px] uppercase tracking-[0.5em] ${subTextColor}`}>OPERATIVE METADATA</th>
-                      <th className={`py-12 px-12 font-black text-[11px] uppercase tracking-[0.5em] ${subTextColor}`}>LIQUIDITY ACCESS</th>
-                      <th className={`py-12 px-12 font-black text-[11px] uppercase tracking-[0.5em] ${subTextColor}`}>ENLISTMENT HASH</th>
-                      <th className={`py-12 px-12 font-black text-[11px] uppercase tracking-[0.5em] text-right ${subTextColor}`}>OVERRIDE PROTOCOL</th>
+                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Name / Email</th>
+                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Wallet Balance</th>
+                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Joined Date</th>
+                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest text-right ${subTextColor}`}>Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.03]">
+                  <tbody className="divide-y divide-white/5">
                     {users.filter(u => u.name.toLowerCase().includes(searchUser.toLowerCase()) || u.email.toLowerCase().includes(searchUser.toLowerCase())).map(u => (
-                      <tr key={u._id} className={`transition-all group ${isDark ? 'hover:bg-white/[0.02]' : 'hover:bg-slate-50'}`}>
-                        <td className="py-12 px-12">
-                          <div className="flex items-center gap-8">
-                             <div className="w-20 h-20 rounded-[2rem] bg-primary/10 flex items-center justify-center text-primary font-black text-3xl shadow-3xl border border-primary/20 group-hover:scale-110 transition-transform duration-500">
+                      <tr key={u._id} className={`transition-all ${isDark ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}>
+                        <td className="py-6 px-8">
+                          <div className="flex items-center gap-4">
+                             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
                                 {u.name.charAt(0).toUpperCase()}
                              </div>
                              <div>
-                                <p className={`font-black text-2xl group-hover:text-primary transition-colors ${textColor}`}>{u.name.toUpperCase()}</p>
-                                <p className={`text-[10px] font-black uppercase tracking-widest mt-2 font-mono ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>{u.email}</p>
+                                <p className={`font-bold text-base ${textColor}`}>{u.name}</p>
+                                <p className={`text-[10px] ${subTextColor}`}>{u.email}</p>
                              </div>
                           </div>
                         </td>
-                        <td className="py-12 px-12">
-                           <p className="font-black text-3xl text-primary italic tracking-tighter transition-all group-hover:scale-105 origin-left">₦{u.walletBalance.toLocaleString()}</p>
-                           <p className={`text-[9px] font-black uppercase tracking-[0.3em] mt-3 opacity-50 ${textColor}`}>AVAILABLE RESERVES</p>
+                        <td className="py-6 px-8">
+                           <p className="font-bold text-lg text-primary">₦{u.walletBalance.toLocaleString()}</p>
                         </td>
-                        <td className={`py-12 px-12 text-[11px] font-black uppercase tracking-[0.3em] ${subTextColor}`}>
-                           {new Date(u.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        <td className={`py-6 px-8 text-xs font-bold ${subTextColor}`}>
+                           {new Date(u.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="py-12 px-12 text-right">
+                        <td className="py-6 px-8 text-right">
                            <button 
                             onClick={() => {
-                              const amt = prompt('LEDGER ADJUSTMENT OFFSET (NGN):');
+                              const amt = prompt('Amount to add/subtract (₦):');
                               if (amt) adjustBalance(u._id, parseFloat(amt));
                             }}
-                            className={`px-10 py-5 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] border-2 transition-all shadow-xl active:scale-95 ${isDark ? 'bg-white/5 border-white/5 hover:bg-primary hover:text-white hover:border-primary' : 'bg-white border-slate-200 hover:bg-primary hover:text-white hover:border-primary'}`}
+                            className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase transition-all border ${isDark ? 'bg-white/5 border-white/10 hover:bg-primary' : 'bg-white border-slate-200 hover:bg-primary hover:text-white'}`}
                            >
-                             MODIFY LEDGER
+                             Adjust Balance
                            </button>
                         </td>
                       </tr>
@@ -290,27 +241,17 @@ const AdminDashboard = () => {
 const AdminStatCard = ({ icon, label, value, color, theme }) => {
   const isDark = theme === 'dark';
   return (
-    <motion.div 
-      whileHover={{ y: -10, scale: 1.02 }}
-      className={`relative p-12 rounded-[4rem] shadow-4xl transition-all overflow-hidden border-b-8 border-transparent hover:border-primary/50 group ${isDark ? 'glass-panel border-white/5' : 'bg-white border-slate-100 shadow-2xl'}`}
-    >
-       <div className="flex justify-between items-start mb-10 relative z-10">
-          <div className="p-6 rounded-[2rem] bg-white/5 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-xl" style={{ color }}>
-             {React.cloneElement(icon, { size: 32 })}
-          </div>
-          <div className="flex gap-1">
-             <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-             <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse delay-75"></div>
-             <div className="w-2 h-2 rounded-full bg-primary/20 animate-pulse delay-150"></div>
+    <div className={`p-8 rounded-[2rem] shadow-lg transition-all border ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}>
+       <div className="flex justify-between items-start mb-6">
+          <div className="p-4 rounded-xl bg-white/5" style={{ color }}>
+             {React.cloneElement(icon, { size: 24 })}
           </div>
        </div>
-       <div className="relative z-10">
-          <p className={`text-[10px] font-black uppercase tracking-[0.5em] mb-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{label}</p>
-          <h4 className={`text-6xl font-black ${isDark ? 'text-white' : 'text-slate-900'} tracking-tighter italic`}>{value}</h4>
+       <div>
+          <p className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>{label}</p>
+          <h4 className={`text-3xl font-black ${isDark ? 'text-white' : 'text-slate-900'} tracking-tight`}>{value}</h4>
        </div>
-       <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-[80px] -z-0"></div>
-       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
-    </motion.div>
+    </div>
   );
 };
 
