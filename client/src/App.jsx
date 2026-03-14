@@ -31,15 +31,15 @@ const AppEnrichment = () => {
     
     // Dynamic Page Titles
     const titles = {
-      '/': 'BoostNaija | Social Authority Hub',
-      '/login': 'Login | Access Command Console',
-      '/register': 'Register | Enlist as Agent',
-      '/dashboard': 'Dashboard | Operation Control',
-      '/dashboard/wallet': 'Vault | Capital Assets',
-      '/dashboard/services': 'Store | Strategic Services',
-      '/dashboard/orders': 'Missions | Deployment Logs',
-      '/dashboard/settings': 'Settings | Security Protocols',
-      '/staff-portal-99': 'Admin | Terminal Root Access'
+      '/': 'BoostNaija | Grow Your Social Presence',
+      '/login': 'Login | BoostNaija',
+      '/register': 'Register | BoostNaija',
+      '/dashboard': 'Dashboard | BoostNaija',
+      '/dashboard/wallet': 'Wallet | Fund Your Account',
+      '/dashboard/services': 'Services | SMM Packages',
+      '/dashboard/orders': 'Orders | History',
+      '/dashboard/settings': 'Settings | Account',
+      '/staff-portal-99': 'Admin | BoostNaija'
     };
     
     document.title = titles[pathname] || 'BoostNaija | Premium SMM Nigeria';

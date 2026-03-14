@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, Wallet, List, TrendingUp, AlertCircle, Plus, Zap, 
-  ArrowRight, Star, Shield, Activity, Globe, Cpu, Clock, Bell, Sparkles
+  ArrowRight, Star, Shield, Activity, Globe, Cpu, Clock, Bell, Sparkles, Settings
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';

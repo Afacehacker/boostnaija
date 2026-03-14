@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { 
-  ShoppingBag, Info, AlertTriangle, ChevronRight, Zap, Target, 
+  ShoppingCart, Info, AlertTriangle, ChevronRight, Zap, Target, 
   Globe, CloudLightning, ShieldCheck, ZapOff, Search, Cpu,
   Database, Activity, Rocket, Clock, Heart, Plus, List
 } from 'lucide-react';
