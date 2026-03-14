@@ -74,20 +74,29 @@ const Services = () => {
   const filteredServices = services
     .filter(s => {
       const matchesCategory = selectedCategory ? s.category === selectedCategory : true;
-      const matchesSearch = searchTerm 
-        ? s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-          s.category.toLowerCase().includes(searchTerm.toLowerCase())
-        : true;
+      
+      let matchesSearch = true;
+      if (searchTerm) {
+        const words = searchTerm.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+        matchesSearch = words.every(word => 
+          s.name.toLowerCase().includes(word) || 
+          s.category.toLowerCase().includes(word)
+        );
+      }
+      
       return matchesCategory && matchesSearch;
     })
     .sort((a, b) => a.sellingRate - b.sellingRate);
 
   const allFilteredServices = searchTerm 
     ? services
-        .filter(s => 
-          s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-          s.category.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        .filter(s => {
+          const words = searchTerm.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+          return words.every(word => 
+            s.name.toLowerCase().includes(word) || 
+            s.category.toLowerCase().includes(word)
+          );
+        })
         .sort((a, b) => a.sellingRate - b.sellingRate)
     : filteredServices;
 
