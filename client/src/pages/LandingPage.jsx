@@ -98,69 +98,112 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-20 px-4 md:px-6">
         <motion.div style={{ opacity, scale }} className="container mx-auto">
-           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
-              <motion.div 
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="lg:w-[55%] text-left"
-              >
-                 <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-[10px] md:text-[12px] font-bold tracking-widest uppercase mb-6 border border-primary/20 text-primary">
-                    <Activity size={14} />
-                    <span>Naija's #1 Social Media Provider</span>
-                 </div>
+           <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="text-center lg:text-left space-y-8 md:space-y-10">
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0.8 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 border border-primary/20 text-primary font-black uppercase tracking-[0.2em] text-[10px] md:text-xs"
+                 >
+                   <Sparkles size={16} /> #1 SMM PANEL IN NIGERIA 🇳🇬
+                 </motion.div>
                  
-                 <h1 className={`text-5xl sm:text-7xl md:text-[6rem] lg:text-[7.5rem] font-black mb-6 md:mb-8 leading-[0.9] tracking-tight ${textColor}`}>
-                   GROW YOUR <br />
-                   <span className="text-primary italic">PRESENCE.</span>
+                 <h1 className={`text-5xl md:text-8xl font-black ${textColor} leading-[0.9] tracking-tighter`}>
+                   BOOST YOUR <br />
+                   <span className="text-primary italic">DIGITAL</span> <br />
+                   PRESENCE.
                  </h1>
-                 
-                 <p className={`text-lg md:text-2xl ${subTextColor} mb-8 md:mb-12 max-w-2xl leading-relaxed font-medium`}>
-                    Get real followers, likes, and views instantly. We help Nigerian influencers, brands, and businesses dominate social media with ease.
+
+                 <p className={`text-lg md:text-2xl font-medium ${subTextColor} max-w-xl mx-auto lg:mx-0 leading-relaxed`}>
+                   Stop waiting for the algorithm o! Get instant followers, likes, and views on all social platforms. Safe, fast, and very cheap.
                  </p>
-                 
-                 <div className="flex flex-col sm:flex-row items-center gap-6 md:gap-8">
-                    <Link to="/register" className="btn-primary group w-full sm:w-auto text-lg md:text-xl px-12 py-5 md:py-6 font-bold flex items-center justify-center gap-3 shadow-xl">
-                       Get Started Now
-                       <ArrowRight className="group-hover:translate-x-2 transition-transform" size={20} />
+
+                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 md:gap-6">
+                    <Link to="/register" className="btn-primary py-5 md:py-6 px-10 md:px-14 text-lg md:text-xl font-bold rounded-xl md:rounded-2xl flex items-center gap-3">
+                       Get Started Now <ArrowRight size={24} />
                     </Link>
-                    <div className="flex -space-x-4">
-                       {[1,2,3,4].map(i => (
-                         <div key={i} className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-white overflow-hidden shadow-md">
-                            <img src={`https://i.pravatar.cc/150?u=${i*100}`} alt="User" />
-                         </div>
-                       ))}
-                       <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-white ${isDark ? 'bg-slate-800' : 'bg-slate-200'} flex items-center justify-center text-[10px] font-bold ${textColor}`}>
-                         +15K
-                       </div>
+                    <Link to="/dashboard/services" className={`py-5 md:py-6 px-10 md:px-14 text-lg md:text-xl font-bold rounded-xl md:rounded-2xl border-2 transition-all flex items-center gap-3 ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50'}`}>
+                       View Prices
+                    </Link>
+                 </div>
+
+                 <div className="flex items-center justify-center lg:justify-start gap-8 pt-4">
+                    <div className="text-center lg:text-left">
+                       <p className={`text-2xl md:text-3xl font-black ${textColor}`}>15K+</p>
+                       <p className={`text-[10px] font-bold uppercase tracking-widest ${subTextColor}`}>Active Users</p>
+                    </div>
+                    <div className="w-px h-10 bg-white/10"></div>
+                    <div className="text-center lg:text-left">
+                       <p className={`text-2xl md:text-3xl font-black ${textColor}`}>1.2M+</p>
+                       <p className={`text-[10px] font-bold uppercase tracking-widest ${subTextColor}`}>Orders Completed</p>
+                    </div>
+                    <div className="w-px h-10 bg-white/10"></div>
+                    <div className="text-center lg:text-left">
+                       <p className={`text-2xl md:text-3xl font-black ${textColor}`}>4.9/5</p>
+                       <p className={`text-[10px] font-bold uppercase tracking-widest ${subTextColor}`}>Client Rating</p>
                     </div>
                  </div>
-              </motion.div>
+              </div>
 
               <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1 }}
-                className="lg:w-[45%] relative w-full"
+                initial={{ opacity: 0, rotateY: 20 }}
+                animate={{ opacity: 1, rotateY: 0 }}
+                className="hidden lg:block perspective-1000"
               >
-                  <div className="relative z-10 group">
-                    <div className="absolute -inset-4 bg-primary/20 blur-3xl rounded-full opacity-50"></div>
-                    <img 
-                      src="/nexus_hero.png" 
-                      alt="Social Media Growth" 
-                      className="w-full h-auto rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-white/10"
-                    />
-                    
-                    {/* Growth Badge */}
-                    <div className="absolute -top-4 -right-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-primary/20 shadow-xl">
-                       <TrendingUp className="text-primary mb-1" size={24} />
-                       <p className={`text-[10px] font-bold ${textColor} tracking-wider`}>DAILY GROWTH</p>
-                       <p className="text-xl font-bold text-green-500">+4,500%</p>
-                    </div>
-                 </div>
+                  <div className="relative rotate-y-12 transition-transform duration-700 hover:rotate-0">
+                     <img 
+                       src="/hero_img.png" 
+                       alt="Social Media Growth" 
+                       className="w-full h-auto rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-white/10"
+                     />
+                     
+                     {/* Growth Badge */}
+                     <div className="absolute -top-4 -right-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-primary/20 shadow-xl text-center">
+                        <TrendingUp className="text-primary mb-1 mx-auto" size={24} />
+                        <p className={`text-[10px] font-bold ${textColor} tracking-wider`}>DAILY GROWTH</p>
+                        <p className="text-xl font-bold text-green-500">+4,500%</p>
+                     </div>
+                  </div>
               </motion.div>
            </div>
         </motion.div>
+      </section>
+
+      {/* Social Platforms */}
+      <section className={`py-16 md:py-24 border-y border-white/5 relative overflow-hidden ${isDark ? 'bg-black/20' : 'bg-slate-50'}`}>
+         <div className="container mx-auto px-6 relative z-10 flex flex-col items-center">
+            <h3 className={`text-sm md:text-base font-bold uppercase tracking-[0.3em] mb-12 text-center ${subTextColor}`}>Platforms We Support</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-8 md:gap-16 items-center">
+               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
+                  <Instagram size={48} className="text-pink-600" />
+                  <span className="text-[10px] font-black tracking-widest">INSTAGRAM</span>
+               </div>
+               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
+                  <div className="w-12 h-12 flex items-center justify-center bg-black rounded-lg">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/TikTok_logo.svg/2560px-TikTok_logo.svg.png" className="w-8 h-auto" alt="tiktok" />
+                  </div>
+                  <span className="text-[10px] font-black tracking-widest">TIKTOK</span>
+               </div>
+               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
+                  <Youtube size={48} className="text-red-600" />
+                  <span className="text-[10px] font-black tracking-widest">YOUTUBE</span>
+               </div>
+               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
+                  <Facebook size={48} className="text-blue-700" />
+                  <span className="text-[10px] font-black tracking-widest">FACEBOOK</span>
+               </div>
+               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
+                  <Twitter size={48} className="text-sky-500" />
+                  <span className="text-[10px] font-black tracking-widest">TWITTER (X)</span>
+               </div>
+               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-all hover:-translate-y-2">
+                  <MessageCircle size={48} className="text-green-500" />
+                  <span className="text-[10px] font-black tracking-widest">THREADS</span>
+               </div>
+            </div>
+         </div>
+         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full"></div>
+         <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full"></div>
       </section>
 
       {/* Services Section */}
@@ -175,50 +218,21 @@ const LandingPage = () => {
                <FeatureCard 
                  icon={<Zap className="text-primary" size={32} />}
                  title="Instant Delivery"
-                 desc="Our system is fully automated. Your followers and likes start coming in immediately after you place an order."
+                 desc="No long thing o! Your followers and likes start coming in immediately after you pay. Automation at its best."
                  theme={theme}
                />
                <FeatureCard 
                  icon={<ShieldCheck className="text-primary" size={32} />}
                  title="Safe & Secure"
-                 desc="We never ask for your password. Our methods are 100% safe and follow all social media platform rules."
+                 desc="We never ask for your password. Our methods are 100% safe. Your account protection is our top priority."
                  theme={theme}
                />
                <FeatureCard 
                  icon={<Database className="text-primary" size={32} />}
-                 title="Affordable Prices"
-                 desc="We offer the cheapest rates in Nigeria for high-quality SMM services. Grow your brand without breaking the bank."
+                 title="Cheapest in Naija"
+                 desc="We offer the most affordable rates for high-quality SMM services. Grow your brand without breaking your wallet."
                  theme={theme}
                />
-            </div>
-         </div>
-      </section>
-
-      {/* Social Platforms */}
-      <section className={`py-16 md:py-24 border-y border-white/5 relative overflow-hidden ${isDark ? 'bg-black/20' : 'bg-slate-50'}`}>
-         <div className="container mx-auto px-6 relative z-10 flex flex-col items-center">
-            <h3 className={`text-sm md:text-base font-bold uppercase tracking-[0.3em] mb-12 text-center ${subTextColor}`}>Platforms We Support</h3>
-            <div className="flex flex-wrap justify-center gap-10 md:gap-20 items-center opacity-60">
-               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-opacity">
-                  <Instagram size={36} className="text-primary" />
-                  <span className="text-[10px] font-bold">INSTAGRAM</span>
-               </div>
-               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-opacity">
-                  <Youtube size={36} className="text-red-500" />
-                  <span className="text-[10px] font-bold">YOUTUBE</span>
-               </div>
-               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-opacity">
-                  <Twitter size={36} className="text-sky-400" />
-                  <span className="text-[10px] font-bold">TWITTER (X)</span>
-               </div>
-               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-opacity">
-                  <Facebook size={36} className="text-blue-600" />
-                  <span className="text-[10px] font-bold">FACEBOOK</span>
-               </div>
-               <div className="flex flex-col items-center gap-2 group cursor-pointer hover:opacity-100 transition-opacity">
-                  <Globe size={36} className="text-primary" />
-                  <span className="text-[10px] font-bold">WEBSITE</span>
-               </div>
             </div>
          </div>
       </section>
@@ -230,11 +244,11 @@ const LandingPage = () => {
            whileInView={{ opacity: 1, scale: 1 }}
            className={`max-w-4xl mx-auto rounded-[2rem] md:rounded-[3.5rem] p-10 md:p-20 border ${borderCol} relative overflow-hidden shadow-xl ${isDark ? 'bg-slate-900' : 'bg-white'}`}
          >
-            <div className="relative z-10">
-               <h2 className={`text-3xl md:text-6xl font-black mb-6 md:mb-8 ${textColor} tracking-tight leading-tight`}>READY TO <span className="text-primary italic">BLAST OFF?</span></h2>
-               <p className={`text-lg md:text-xl ${subTextColor} mb-10 md:mb-12 max-w-xl mx-auto font-medium`}>Join 15k+ smart Nigerians growing their influence today. Registration is free and takes 1 minute.</p>
+            <div className="relative z-10 text-center">
+               <h2 className={`text-3xl md:text-6xl font-black mb-6 md:mb-8 ${textColor} tracking-tight leading-tight`}>READY TO <span className="text-primary italic">GO VIRAL?</span></h2>
+               <p className={`text-lg md:text-xl ${subTextColor} mb-10 md:mb-12 max-w-xl mx-auto font-medium`}>Join 15k+ smart Nigerians growing their influence today. Registration is free and takes less than a minute. No capping!</p>
                <Link to="/register" className="btn-primary py-5 md:py-6 px-12 md:px-16 text-lg md:text-xl font-bold rounded-xl md:rounded-2xl inline-block shadow-lg">
-                  Join BoostNaija Now
+                  Join BoostNaija Now 🚀
                </Link>
             </div>
             <div className="absolute top-0 left-0 w-full h-full bg-primary/5 blur-3xl -z-10"></div>

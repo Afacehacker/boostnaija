@@ -43,6 +43,26 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     const res = await axios.post(`${API_URL}/auth/register`, { name, email, password });
+    return res.data;
+  };
+
+  const verify = async (email, otp) => {
+    const res = await axios.post(`${API_URL}/auth/verify`, { email, otp });
+    const { token: newToken, user: userData } = res.data;
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    setUser(userData);
+    return res.data;
+  };
+
+  const updateProfile = async (userData) => {
+    const res = await axios.put(`${API_URL}/auth/updatedetails`, userData);
+    setUser(res.data.data);
+    return res.data;
+  };
+
+  const updatePassword = async (passwordData) => {
+    const res = await axios.put(`${API_URL}/auth/updatepassword`, passwordData);
     const { token: newToken, user: userData } = res.data;
     localStorage.setItem('token', newToken);
     setToken(newToken);
@@ -58,7 +78,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, fetchUser }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, verify, logout, fetchUser, updateProfile, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );

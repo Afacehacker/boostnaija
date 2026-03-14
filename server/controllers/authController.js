@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const sendEmail = require('../services/emailService');
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -8,14 +9,87 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Create user
-    const user = await User.create({
+    // Check if user exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
+    }
+
+    // Generate Verification Token (OTP)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+    // Create user (unverified)
+    user = await User.create({
       name,
       email,
-      password
+      password,
+      verificationToken: otp,
+      verificationTokenExpire: otpExpire,
+      isVerified: false
     });
 
-    sendTokenResponse(user, 201, res);
+    // Send Email
+    const html = `
+      <div style="font-family: sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #3A7AFE;">Welcome to BoostNaija!</h2>
+        <p>Hello <b>${name}</b>,</p>
+        <p>Thank you for enlisting with Nigeria's #1 Social Growth Hub. To complete your registration, please use the verification code below:</p>
+        <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;">
+          <h1 style="letter-spacing: 5px; color: #3A7AFE; margin: 0;">${otp}</h1>
+        </div>
+        <p>This code expires in 10 minutes. If you didn't request this, please ignore this email.</p>
+        <p>Best regards,<br/>The BoostNaija Team</p>
+      </div>
+    `;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'BoostNaija - Verify Your Account',
+        html
+      });
+
+      res.status(201).json({ 
+        success: true, 
+        message: 'Verification code sent to email',
+        email: user.email
+      });
+    } catch (err) {
+      user.verificationToken = undefined;
+      user.verificationTokenExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
+
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// @desc    Verify email
+// @route   POST /api/auth/verify
+// @access  Public
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    const user = await User.findOne({
+      email,
+      verificationToken: otp,
+      verificationTokenExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired code' });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpire = undefined;
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
@@ -28,23 +102,25 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate email & password
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide an email and password' });
     }
 
-    // Check for user
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    // Check if password matches
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    if (!user.isVerified) {
+       // Re-send OTP if not verified?
+       return res.status(401).json({ success: false, message: 'Please verify your email first', unverified: true });
     }
 
     sendTokenResponse(user, 200, res);
@@ -53,9 +129,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// @desc    Get current logged in user
-// @route   GET /api/auth/me
-// @access  Private
+// @desc    Get current user
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -65,9 +139,52 @@ exports.getMe = async (req, res) => {
   }
 };
 
+// @desc    Update user details
+// @route   PUT /api/auth/updatedetails
+// @access  Private
+exports.updateDetails = async (req, res) => {
+  try {
+    const fieldsToUpdate = {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      avatar: req.body.avatar
+    };
+
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// @desc    Update password
+// @route   PUT /api/auth/updatepassword
+// @access  Private
+exports.updatePassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
+
+    // Check current password
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return res.status(401).json({ success: false, message: 'Password is incorrect' });
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
-  // Create token
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: '30d'
   });
@@ -80,7 +197,9 @@ const sendTokenResponse = (user, statusCode, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      walletBalance: user.walletBalance
+      walletBalance: user.walletBalance,
+      avatar: user.avatar,
+      phone: user.phone
     }
   });
 };

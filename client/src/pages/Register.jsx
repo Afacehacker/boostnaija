@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, CheckCircle2, ChevronLeft, ShieldCheck, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Lock, User, ArrowRight, CheckCircle2, ChevronLeft, ShieldCheck, Zap, Shield } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [otpMode, setOtpMode] = useState(false);
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  
+  const { register, verify } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const isDark = theme === 'dark';
@@ -19,8 +22,8 @@ const Register = () => {
     setLoading(true);
     try {
       await register(formData.name, formData.email, formData.password);
-      toast.success('Registration successful! Welcome to BoostNaija.');
-      navigate('/dashboard');
+      toast.success('Verification code sent to your email!');
+      setOtpMode(true);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally {
@@ -28,10 +31,24 @@ const Register = () => {
     }
   };
 
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await verify(formData.email, otp);
+      toast.success('Account verified! Welcome to BoostNaija.');
+      navigate('/dashboard');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Verification failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const steps = [
     { icon: <User size={20} />, title: "Create Profile", desc: "Set up your account in seconds" },
-    { icon: <Zap size={20} />, title: "Fund Wallet", desc: "Add money easily via Bank Transfer or Card" },
-    { icon: <ShieldCheck size={20} />, title: "Grow Presence", desc: "Start boosting your social media accounts" }
+    { icon: <Zap size={20} />, title: "Verify Email", desc: "Receive a secure code in your inbox" },
+    { icon: <ShieldCheck size={20} />, title: "Start Boosting", desc: "Access 1,000+ premium SMM services" }
   ];
 
   return (
@@ -71,76 +88,128 @@ const Register = () => {
 
       {/* Right Side: Form */}
       <div className={`w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-24 relative ${isDark ? 'bg-background-dark' : 'bg-white'}`}>
-        <motion.div 
-           initial={{ opacity: 0, x: 20 }}
-           animate={{ opacity: 1, x: 0 }}
-           className="w-full max-w-md pt-20 lg:pt-0"
-        >
-          <div className="mb-12">
-            <h2 className={`text-5xl font-black mb-4 tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'}`}>Create Account</h2>
-            <p className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Join thousands of Nigerians growing their presence today.</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-3">
-              <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Full Name</label>
-              <div className="relative">
-                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                 <input 
-                    type="text" 
-                    required
-                    className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'} border rounded-2xl py-5 pl-12 pr-6 outline-none focus:border-primary transition-all font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}
-                    placeholder="Enter your name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                 />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Email Address</label>
-              <div className="relative">
-                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                 <input 
-                    type="email" 
-                    required
-                    className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'} border rounded-2xl py-5 pl-12 pr-6 outline-none focus:border-primary transition-all font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}
-                    placeholder="email@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                 />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Create Password</label>
-              <div className="relative">
-                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                 <input 
-                    type="password" 
-                    required
-                    className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'} border rounded-2xl py-5 pl-12 pr-6 outline-none focus:border-primary transition-all font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                 />
-              </div>
-            </div>
-
-            <button 
-              disabled={loading}
-              className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-50 group"
+        <AnimatePresence mode="wait">
+          {!otpMode ? (
+            <motion.div 
+               key="register"
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               className="w-full max-w-md pt-20 lg:pt-0"
             >
-              {loading ? 'Creating Account...' : 'Register Now'}
-              <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
-            </button>
-          </form>
+              <div className="mb-12">
+                <h2 className={`text-5xl font-black mb-4 tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'}`}>Create Account</h2>
+                <p className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Join thousands of Nigerians growing their presence today.</p>
+              </div>
 
-          <p className={`mt-12 text-center font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Already have an account? {' '}
-            <Link to="/login" className="text-primary font-black hover:underline decoration-2 underline-offset-4">Login Here</Link>
-          </p>
-        </motion.div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Full Name</label>
+                  <div className="relative">
+                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                     <input 
+                        type="text" 
+                        required
+                        className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'} border rounded-2xl py-5 pl-12 pr-6 outline-none focus:border-primary transition-all font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}
+                        placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                     />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Email Address</label>
+                  <div className="relative">
+                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                     <input 
+                        type="email" 
+                        required
+                        className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'} border rounded-2xl py-5 pl-12 pr-6 outline-none focus:border-primary transition-all font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}
+                        placeholder="email@example.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                     />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Create Password</label>
+                  <div className="relative">
+                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                     <input 
+                        type="password" 
+                        required
+                        className={`w-full ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'} border rounded-2xl py-5 pl-12 pr-6 outline-none focus:border-primary transition-all font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}
+                        placeholder="••••••••"
+                        value={formData.password}
+                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                     />
+                  </div>
+                </div>
+
+                <button 
+                  disabled={loading}
+                  className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-50 group"
+                >
+                  {loading ? 'Creating Account...' : 'Register Now'}
+                  <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
+                </button>
+              </form>
+
+              <p className={`mt-12 text-center font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                Already have an account? {' '}
+                <Link to="/login" className="text-primary font-black hover:underline decoration-2 underline-offset-4">Login Here</Link>
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div 
+               key="otp"
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               className="w-full max-w-md pt-20 lg:pt-0"
+            >
+               <div className="mb-12">
+                  <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center text-primary mb-8 border border-primary/20">
+                     <Shield size={40} />
+                  </div>
+                  <h2 className={`text-5xl font-black mb-4 tracking-tighter ${isDark ? 'text-white' : 'text-slate-900'}`}>Verify Email</h2>
+                  <p className={`font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>We've sent a 6-digit code to <span className="text-primary font-bold">{formData.email}</span>. Check your inbox (or spam).</p>
+               </div>
+
+               <form onSubmit={handleVerify} className="space-y-8">
+                  <div className="space-y-3">
+                     <label className={`text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Verification Code</label>
+                     <input 
+                        type="text" 
+                        required
+                        maxLength="6"
+                        className={`w-full text-center text-4xl tracking-[0.5em] lg:tracking-[1em] ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'} border rounded-2xl py-6 outline-none focus:border-primary transition-all font-black`}
+                        placeholder="000000"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                     />
+                  </div>
+
+                  <button 
+                     disabled={loading}
+                     className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-50 group"
+                  >
+                     {loading ? 'Verifying...' : 'Verify & Continue'}
+                     <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
+                  </button>
+
+                  <button 
+                     type="button"
+                     onClick={() => setOtpMode(false)}
+                     className={`w-full py-4 text-xs font-black uppercase tracking-widest ${isDark ? 'text-slate-500' : 'text-slate-400'} hover:text-primary transition-colors`}
+                  >
+                     Change Email Address
+                  </button>
+               </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

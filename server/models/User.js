@@ -34,8 +34,15 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  verificationToken: String,
+  verificationTokenExpire: Date,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  avatar: {
+    type: String,
+    default: 'https://i.pravatar.cc/150?u=boostnaija'
+  },
+  phone: String,
   createdAt: {
     type: Date,
     default: Date.now
