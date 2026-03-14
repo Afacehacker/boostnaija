@@ -82,29 +82,32 @@ const autoSyncServices = async () => {
       return;
     }
 
-    let count = 0;
+    console.log(`[Auto-Sync] Received ${externalServices.length} services. Clearing old DB records...`);
+
+    // ⚠️ Delete ALL old services first so stale IDs from previous providers don't linger
+    await Service.deleteMany({});
+    console.log('[Auto-Sync] Old services cleared.');
+
+    // Insert fresh services with profit margin applied
+    const docs = [];
     for (const s of externalServices) {
       if (!s.service || !s.name) continue;
       const costRate    = parseFloat(s.rate) || 0;
       const sellingRate = parseFloat((costRate * profitMargin).toFixed(4));
-
-      await Service.findOneAndUpdate(
-        { externalId: s.service.toString() },
-        {
-          externalId:  s.service.toString(),
-          name:        s.name,
-          category:    s.category || 'General',
-          rate:        costRate,
-          sellingRate: sellingRate,
-          min:         parseInt(s.min)  || 0,
-          max:         parseInt(s.max)  || 0,
-          active:      true,
-        },
-        { upsert: true, new: true }
-      );
-      count++;
+      docs.push({
+        externalId:  s.service.toString(),
+        name:        s.name,
+        category:    s.category || 'General',
+        rate:        costRate,
+        sellingRate: sellingRate,
+        min:         parseInt(s.min)  || 0,
+        max:         parseInt(s.max)  || 0,
+        active:      true,
+      });
     }
-    console.log(`[Auto-Sync] ✅ ${count} services synced (${((profitMargin - 1) * 100).toFixed(0)}% profit applied).`);
+
+    await Service.insertMany(docs, { ordered: false });
+    console.log(`[Auto-Sync] ✅ ${docs.length} services synced from ReallySimpleSocial (${((profitMargin - 1) * 100).toFixed(0)}% profit applied).`);
   } catch (err) {
     console.error('[Auto-Sync] ⚠️ Service sync failed (server still running):', err.message);
   }

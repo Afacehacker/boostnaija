@@ -23,30 +23,28 @@ exports.syncServices = async (req, res) => {
     // 60% profit margin: customer pays rate × 1.60
     const profitMargin = parseFloat(process.env.PROFIT_MARGIN) || 1.60;
 
-    let syncedCount = 0;
+    // Clear ALL old services so stale IDs from previous providers can't cause wrong API calls
+    await Service.deleteMany({});
 
+    const docs = [];
     for (const s of externalServices) {
       if (!s.service || !s.name) continue;
-
       const costRate    = parseFloat(s.rate) || 0;
       const sellingRate = parseFloat((costRate * profitMargin).toFixed(4));
-
-      await Service.findOneAndUpdate(
-        { externalId: s.service.toString() },
-        {
-          externalId:  s.service.toString(),
-          name:        s.name,
-          category:    s.category || 'General',
-          rate:        costRate,
-          sellingRate: sellingRate,
-          min:         parseInt(s.min)  || 0,
-          max:         parseInt(s.max)  || 0,
-          active:      true,
-        },
-        { upsert: true, new: true }
-      );
-      syncedCount++;
+      docs.push({
+        externalId:  s.service.toString(),
+        name:        s.name,
+        category:    s.category || 'General',
+        rate:        costRate,
+        sellingRate: sellingRate,
+        min:         parseInt(s.min)  || 0,
+        max:         parseInt(s.max)  || 0,
+        active:      true,
+      });
     }
+
+    await Service.insertMany(docs, { ordered: false });
+    const syncedCount = docs.length;
 
     console.log(`[Sync] ✅ ${syncedCount} services synced. Margin: ${((profitMargin - 1) * 100).toFixed(0)}%`);
     res.json({

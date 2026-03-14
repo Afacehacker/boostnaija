@@ -33,14 +33,19 @@ exports.placeOrder = async (req, res) => {
     }
 
     // 5. Send order to provider — externalId IS the provider's service ID
+    const orderPayload = {
+      service:  service.externalId,   // provider's own service ID
+      link,
+      quantity: String(quantity),     // ensure string for URLSearchParams
+    };
+    console.log('[Order] Sending to provider:', JSON.stringify(orderPayload));
+
     let externalRes;
     try {
-      externalRes = await smmApiService.addOrder({
-        service:  service.externalId,   // provider's own service number
-        link,
-        quantity,
-      });
+      externalRes = await smmApiService.addOrder(orderPayload);
+      console.log('[Order] Provider response:', JSON.stringify(externalRes));
     } catch (apiError) {
+      console.error('[Order] Provider error:', apiError.message);
       return res.status(502).json({
         success: false,
         message: 'Provider API error: ' + apiError.message,
