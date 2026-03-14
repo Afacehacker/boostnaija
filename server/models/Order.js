@@ -37,7 +37,13 @@ const orderSchema = new mongoose.Schema({
     default: 'pending'
   },
   start_count: Number,
-  remains: Number
+  remains: Number,
+  /** Which SMM provider fulfilled this order: 'smm1' | 'smm2' */
+  provider: {
+    type: String,
+    enum: ['smm1', 'smm2'],
+    default: 'smm1'
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

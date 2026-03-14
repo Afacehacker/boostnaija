@@ -12,45 +12,52 @@ exports.getServices = async (req, res) => {
 
 exports.syncServices = async (req, res) => {
   try {
-    const externalServices = await smmApiService.getServices();
-    
-    if (!Array.isArray(externalServices)) {
-      return res.status(500).json({ success: false, message: 'Invalid response from provider' });
+    // Fetch from BOTH providers and pick cheapest per service
+    const merged = await smmApiService.getServicesFromBoth();
+
+    if (!merged || merged.length === 0) {
+      return res.status(500).json({ success: false, message: 'No services returned from any provider' });
     }
 
-    const profitMargin = 1.25; // 25% profit margin for local market
+    // Profit margin: 60% above cost price  →  multiply by 1.60
+    const profitMargin = parseFloat(process.env.PROFIT_MARGIN) || 1.60;
+
     let syncedCount = 0;
 
-    for (const s of externalServices) {
-      if (!s.service || !s.name) continue;
+    for (const s of merged) {
+      // Use a URL/space-safe slug of the name as the stable externalId
+      const stableId = s.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 80)
+                       + '-' + s.providerServiceId;
 
-      const sellingRate = Math.ceil(parseFloat(s.rate) * profitMargin);
-      
+      const sellingRate = parseFloat((s.rate * profitMargin).toFixed(4));
+
       await Service.findOneAndUpdate(
-        { externalId: s.service.toString() },
+        { externalId: stableId },
         {
-          externalId: s.service.toString(),
+          externalId: stableId,
           name: s.name,
           category: s.category || 'General',
-          rate: parseFloat(s.rate),
-          sellingRate: sellingRate,
-          min: parseInt(s.min) || 0,
-          max: parseInt(s.max) || 0,
-          active: true
+          rate: s.rate,
+          sellingRate,
+          min: s.min,
+          max: s.max,
+          provider: s.provider,
+          providerServiceId: s.providerServiceId,
+          active: true,
         },
         { upsert: true, new: true }
       );
       syncedCount++;
     }
 
-    console.log(`Synced ${syncedCount} services from provider.`);
-    res.json({ 
-      success: true, 
-      message: `Strategic database rebuilt: ${syncedCount} services synchronized`,
-      count: syncedCount 
+    console.log(`[Sync] ${syncedCount} services synced (60% margin, cheapest provider per service).`);
+    res.json({
+      success: true,
+      message: `Synced ${syncedCount} services (cheapest provider selected, 60% profit margin applied)`,
+      count: syncedCount,
     });
   } catch (error) {
-    console.error('Sync Error:', error.message);
+    console.error('[Sync Error]', error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
