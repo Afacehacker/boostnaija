@@ -75,8 +75,8 @@ const Dashboard = () => {
                  <div className="flex items-center gap-3">
                     <div className="flex -space-x-2">
                        {[1,2,3].map(i => (
-                         <div key={i} className="w-8 h-8 rounded-full border-2 border-white overflow-hidden shadow-sm">
-                            <img src={`https://i.pravatar.cc/150?u=${i*50}`} alt="user" />
+                         <div key={i} className="w-8 h-8 rounded-full border-2 border-white overflow-hidden shadow-sm bg-slate-100">
+                            <img src={`/avatars/nigerian_${i}.png`} alt="user" className="w-full h-full object-cover" />
                          </div>
                        ))}
                     </div>
