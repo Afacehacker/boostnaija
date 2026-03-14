@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({
+  // Provider's own service ID (e.g. "123") — used to place orders
   externalId: {
     type: String,
     required: true,
-    unique: true              // normalised name used as the stable key
+    unique: true
   },
   name: {
     type: String,
@@ -14,12 +15,12 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // Cheapest raw rate across providers (per 1000 units)
+  // Raw provider rate per 1000 units (cost price)
   rate: {
     type: Number,
     required: true
   },
-  // What we charge the customer (rate * profitMargin)
+  // What we charge the customer: rate * PROFIT_MARGIN (e.g. ×1.60 = 60% profit)
   sellingRate: {
     type: Number,
     required: true
@@ -35,18 +36,6 @@ const serviceSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true
-  },
-  // ── Multi-provider fields ──────────────────────────────────
-  /** Which provider currently offers the cheapest rate: 'smm1' | 'smm2' */
-  provider: {
-    type: String,
-    enum: ['smm1', 'smm2'],
-    default: 'smm1'
-  },
-  /** The external service ID on the chosen provider's panel */
-  providerServiceId: {
-    type: String,
-    required: true
   }
 }, { timestamps: true });
 
