@@ -32,7 +32,7 @@ const Services = () => {
       const res = await axios.get(`${API_URL}/services`);
       const data = res.data.data;
       setServices(data);
-      const cats = [...new Set(data.map(s => s.category))];
+      const cats = [...new Set(data.map(s => s.category))].sort();
       setCategories(cats);
       if (cats.length > 0) setSelectedCategory(cats[0]);
     } catch (err) {
@@ -180,7 +180,7 @@ const Services = () => {
                       <input 
                         type="url" 
                         placeholder="https://instagram.com/p/..." 
-                        className={`w-full rounded-[2.5rem] py-8 pl-18 pr-8 border-2 outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
+                        className={`w-full rounded-[2.5rem] py-8 pl-20 pr-8 border-2 outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
                         value={orderLink}
                         onChange={(e) => setOrderLink(e.target.value)}
                         required
@@ -197,7 +197,7 @@ const Services = () => {
                         <input 
                           type="number" 
                           placeholder={`Min: ${selectedService.min}`}
-                          className={`w-full rounded-[2.5rem] py-8 pl-18 pr-8 border-2 outline-none focus:border-primary transition-all text-2xl font-black ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
+                          className={`w-full rounded-[2.5rem] py-8 pl-20 pr-8 border-2 outline-none focus:border-primary transition-all text-2xl font-black ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-slate-700' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder:text-slate-300 shadow-inner'}`}
                           value={quantity}
                           onChange={(e) => setQuantity(e.target.value)}
                           min={selectedService.min}

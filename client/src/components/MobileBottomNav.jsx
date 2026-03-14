@@ -18,8 +18,13 @@ const MobileBottomNav = () => {
         { name: 'Store', path: '/dashboard/services', icon: <ShoppingCart size={18} /> },
         { name: 'Status', path: '/dashboard/orders', icon: <List size={18} /> },
         { name: 'Vault', path: '/dashboard/wallet', icon: <Wallet size={18} /> },
-        { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> },
     ];
+
+    if (user?.role === 'admin') {
+        navItems.push({ name: 'Admin', path: '/admin', icon: <Settings size={18} /> });
+    } else {
+        navItems.push({ name: 'Settings', path: '/dashboard/settings', icon: <Settings size={18} /> });
+    }
 
     return (
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] px-4 pb-6 pt-2 pointer-events-none">
