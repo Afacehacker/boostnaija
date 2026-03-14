@@ -71,20 +71,24 @@ const Services = () => {
     return `₦${price.toLocaleString()}`;
   };
 
-  const filteredServices = services.filter(s => {
-    const matchesCategory = selectedCategory ? s.category === selectedCategory : true;
-    const matchesSearch = searchTerm 
-      ? s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        s.category.toLowerCase().includes(searchTerm.toLowerCase())
-      : true;
-    return matchesCategory && matchesSearch;
-  });
+  const filteredServices = services
+    .filter(s => {
+      const matchesCategory = selectedCategory ? s.category === selectedCategory : true;
+      const matchesSearch = searchTerm 
+        ? s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          s.category.toLowerCase().includes(searchTerm.toLowerCase())
+        : true;
+      return matchesCategory && matchesSearch;
+    })
+    .sort((a, b) => a.sellingRate - b.sellingRate);
 
   const allFilteredServices = searchTerm 
-    ? services.filter(s => 
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        s.category.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    ? services
+        .filter(s => 
+          s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          s.category.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => a.sellingRate - b.sellingRate)
     : filteredServices;
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
