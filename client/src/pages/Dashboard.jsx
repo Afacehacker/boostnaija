@@ -13,12 +13,14 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
   const [stats, setStats] = useState({ totalOrders: 0, activeOrders: 0, totalSpent: 0 });
+  const [notifications, setNotifications] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
   const isDark = theme === 'dark';
 
   useEffect(() => {
     fetchStats();
+    fetchNotifications();
     setTimeout(() => setIsLoaded(true), 100);
   }, []);
 
@@ -35,6 +37,15 @@ const Dashboard = () => {
       });
     } catch (err) {
       console.error('Failed to fetch stats');
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/notifications`);
+      setNotifications(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch notifications');
     }
   };
 
@@ -133,20 +144,45 @@ const Dashboard = () => {
                  <Bell size={20} className="text-primary" /> ANNOUNCEMENTS
               </h3>
               
-              <div className={`p-8 md:p-10 rounded-[2rem] md:rounded-[3rem] border shadow-lg relative overflow-hidden group ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-100'}`}>
-                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-6">
-                       <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Update</span>
-                       <span className={`text-[10px] ${subTextColor}`}>New Service Added</span>
+              <div className="space-y-6">
+                 {notifications.length > 0 ? (
+                   notifications.map((notif, idx) => (
+                      <motion.div 
+                        key={notif._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className={`p-8 rounded-[2rem] border shadow-lg relative overflow-hidden group ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-100'}`}
+                      >
+                         <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                               <div className="flex items-center gap-3">
+                                  <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                                     notif.type === 'urgent' ? 'bg-red-500/20 text-red-500' : 
+                                     notif.type === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
+                                     'bg-primary/20 text-primary'
+                                  }`}>
+                                     {notif.type || 'info'}
+                                  </span>
+                                  <span className={`text-[10px] font-bold ${subTextColor}`}>
+                                     {new Date(notif.createdAt).toLocaleDateString()}
+                                  </span>
+                               </div>
+                            </div>
+                            <h4 className={`text-xl md:text-2xl font-black mb-3 ${textColor}`}>{notif.title}</h4>
+                            <p className={`text-sm md:text-base ${subTextColor} font-medium leading-relaxed`}>
+                               {notif.message}
+                            </p>
+                         </div>
+                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl -z-10 group-hover:bg-primary/10 transition-colors"></div>
+                      </motion.div>
+                   ))
+                 ) : (
+                    <div className={`p-12 rounded-[2rem] border border-dashed text-center ${isDark ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-slate-50'}`}>
+                       <Bell size={32} className={`mx-auto mb-4 ${subTextColor} opacity-20`} />
+                       <p className={`text-sm font-bold ${subTextColor}`}>No new announcements for now!</p>
                     </div>
-                    <h4 className={`text-2xl md:text-3xl font-black mb-4 ${textColor}`}>New: Nigerian High-Quality Likes!</h4>
-                    <p className={`text-base md:text-lg ${subTextColor} mb-8 font-medium leading-relaxed`}>
-                       We just added fresh Nigerian social media services. High quality, non-drop, and very fast delivery. Start boosting your visibility today!
-                    </p>
-                    <Link to="/dashboard/services" className="btn-primary py-4 px-8 rounded-xl flex items-center gap-2 font-bold text-sm">
-                       Try It Now <ArrowRight size={18} />
-                    </Link>
-                 </div>
+                 )}
               </div>
            </div>
 

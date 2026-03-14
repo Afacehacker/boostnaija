@@ -152,7 +152,7 @@ const LandingPage = () => {
               >
                   <div className="relative rotate-y-12 transition-transform duration-700 hover:rotate-0">
                      <img 
-                       src="/hero_img.png" 
+                       src="/hero.png" 
                        alt="Social Media Growth" 
                        className="w-full h-auto rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-white/10"
                      />

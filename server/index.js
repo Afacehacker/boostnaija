@@ -15,12 +15,14 @@ const services = require('./routes/serviceRoutes');
 const orders = require('./routes/orderRoutes');
 const payments = require('./routes/paymentRoutes');
 const admin = require('./routes/adminRoutes');
+const notifications = require('./routes/notificationRoutes');
 const orderStatusChecker = require('./jobs/orderStatusChecker');
 
 const app = express();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
@@ -28,7 +30,7 @@ app.use(morgan('dev'));
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 100 
+  max: 200 
 });
 app.use('/api/', limiter);
 
@@ -38,6 +40,7 @@ app.use('/api/services', services);
 app.use('/api/orders', orders);
 app.use('/api/payments', payments);
 app.use('/api/admin', admin);
+app.use('/api/notifications', notifications);
 
 // Basic route
 app.get('/', (req, res) => {

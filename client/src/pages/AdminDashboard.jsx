@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { 
   Users, BarChart3, RefreshCw, Settings, UserPlus, 
   DollarSign, Activity, Database, ShieldAlert, TrendingUp, Search, 
-  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers
+  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
@@ -13,9 +13,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [searchUser, setSearchUser] = useState('');
+  const [showNotifModal, setShowNotifModal] = useState(false);
+  const [newNotif, setNewNotif] = useState({ title: '', message: '', type: 'info' });
   const { theme } = useTheme();
 
   const isDark = theme === 'dark';
@@ -23,6 +26,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchAdminData();
+    fetchNotifications();
   }, []);
 
   const fetchAdminData = async () => {
@@ -36,6 +40,38 @@ const AdminDashboard = () => {
       toast.error('Failed to load admin data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/notifications`);
+      setNotifications(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch notifications');
+    }
+  };
+
+  const sendNotification = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API_URL}/notifications`, newNotif);
+      toast.success('Broadcast sent to all agents! 📢');
+      setShowNotifModal(false);
+      setNewNotif({ title: '', message: '', type: 'info' });
+      fetchNotifications();
+    } catch (err) {
+      toast.error('Failed to send broadcast');
+    }
+  };
+
+  const deleteNotification = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/notifications/${id}`);
+      toast.success('Notification removed');
+      fetchNotifications();
+    } catch (err) {
+      toast.error('Failed to remove notification');
     }
   };
 
@@ -99,7 +135,7 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <div className={`flex gap-8 mb-12 border-b overflow-x-auto no-scrollbar ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-          {['overview', 'users', 'status'].map(tab => (
+          {['overview', 'users', 'notifications', 'status'].map(tab => (
             <button 
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -164,74 +200,168 @@ const AdminDashboard = () => {
             </motion.div>
           )}
 
-          {activeTab === 'users' && (
+          {activeTab === 'notifications' && (
             <motion.div 
-              key="users"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`border rounded-[2rem] overflow-hidden shadow-xl ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-100'}`}
+               key="notifications"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="space-y-8"
             >
-              <div className="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                 <h3 className={`text-2xl font-black ${textColor}`}>User Directory</h3>
-                 <div className="relative w-full md:w-96">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                    <input 
-                      type="text" 
-                      placeholder="Search users..." 
-                      className={`w-full rounded-xl py-4 pl-12 pr-6 border outline-none focus:border-primary transition-all font-bold text-sm ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900 shadow-inner'}`}
-                      value={searchUser}
-                      onChange={(e) => setSearchUser(e.target.value)}
-                    />
-                 </div>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left min-w-[1000px]">
-                  <thead>
-                    <tr className={isDark ? 'bg-white/5' : 'bg-slate-50'}>
-                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Name / Email</th>
-                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Wallet Balance</th>
-                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Joined Date</th>
-                      <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest text-right ${subTextColor}`}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {users.filter(u => u.name.toLowerCase().includes(searchUser.toLowerCase()) || u.email.toLowerCase().includes(searchUser.toLowerCase())).map(u => (
-                      <tr key={u._id} className={`transition-all ${isDark ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}>
-                        <td className="py-6 px-8">
-                          <div className="flex items-center gap-4">
-                             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
-                                {u.name.charAt(0).toUpperCase()}
-                             </div>
-                             <div>
-                                <p className={`font-bold text-base ${textColor}`}>{u.name}</p>
-                                <p className={`text-[10px] ${subTextColor}`}>{u.email}</p>
-                             </div>
+               <div className="flex justify-between items-center">
+                  <h3 className={`text-2xl font-black ${textColor}`}>System Broadcasts</h3>
+                  <button 
+                    onClick={() => setShowNotifModal(true)}
+                    className="btn-primary flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase"
+                  >
+                    <Plus size={18} /> New Broadcast
+                  </button>
+               </div>
+
+               <div className="grid gap-6">
+                  {notifications.map(n => (
+                    <div key={n._id} className={`p-8 rounded-[2rem] border flex justify-between items-center ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}>
+                       <div>
+                          <div className="flex items-center gap-3 mb-2">
+                             <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase ${n.type === 'urgent' ? 'bg-red-500/20 text-red-500' : 'bg-primary/20 text-primary'}`}>{n.type}</span>
+                             <span className={`text-[10px] font-bold ${subTextColor}`}>{new Date(n.createdAt).toLocaleString()}</span>
                           </div>
-                        </td>
-                        <td className="py-6 px-8">
-                           <p className="font-bold text-lg text-primary">₦{u.walletBalance.toLocaleString()}</p>
-                        </td>
-                        <td className={`py-6 px-8 text-xs font-bold ${subTextColor}`}>
-                           {new Date(u.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="py-6 px-8 text-right">
-                           <button 
-                            onClick={() => {
-                              const amt = prompt('Amount to add/subtract (₦):');
-                              if (amt) adjustBalance(u._id, parseFloat(amt));
-                            }}
-                            className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase transition-all border ${isDark ? 'bg-white/5 border-white/10 hover:bg-primary' : 'bg-white border-slate-200 hover:bg-primary hover:text-white'}`}
-                           >
-                             Adjust Balance
-                           </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                          <h4 className={`text-xl font-bold ${textColor}`}>{n.title}</h4>
+                          <p className={`text-sm ${subTextColor}`}>{n.message}</p>
+                       </div>
+                       <button 
+                        onClick={() => deleteNotification(n._id)}
+                        className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                       >
+                         <ShieldAlert size={18} />
+                       </button>
+                    </div>
+                  ))}
+               </div>
             </motion.div>
           )}
+
+          {activeTab === 'users' && (
+            <motion.div 
+               key="users"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className={`border rounded-[2rem] overflow-hidden shadow-xl ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-100'}`}
+            >
+               <div className="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <h3 className={`text-2xl font-black ${textColor}`}>User Directory</h3>
+                  <div className="relative w-full md:w-96">
+                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                     <input 
+                       type="text" 
+                       placeholder="Search users..." 
+                       className={`w-full rounded-xl py-4 pl-12 pr-6 border outline-none focus:border-primary transition-all font-bold text-sm ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900 shadow-inner'}`}
+                       value={searchUser}
+                       onChange={(e) => setSearchUser(e.target.value)}
+                     />
+                  </div>
+               </div>
+               <div className="overflow-x-auto">
+                 <table className="w-full text-left min-w-[1000px]">
+                   <thead>
+                     <tr className={isDark ? 'bg-white/5' : 'bg-slate-50'}>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Name / Email</th>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Wallet Balance</th>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Joined Date</th>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest text-right ${subTextColor}`}>Actions</th>
+                     </tr>
+                   </thead>
+                   <tbody className="divide-y divide-white/5">
+                     {users.filter(u => u.name.toLowerCase().includes(searchUser.toLowerCase()) || u.email.toLowerCase().includes(searchUser.toLowerCase())).map(u => (
+                       <tr key={u._id} className={`transition-all ${isDark ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}>
+                         <td className="py-6 px-8">
+                           <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                                 {u.name.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                 <p className={`font-bold text-base ${textColor}`}>{u.name}</p>
+                                 <p className={`text-[10px] ${subTextColor}`}>{u.email}</p>
+                              </div>
+                           </div>
+                         </td>
+                         <td className="py-6 px-8">
+                            <p className="font-bold text-lg text-primary">₦{u.walletBalance.toLocaleString()}</p>
+                         </td>
+                         <td className={`py-6 px-8 text-xs font-bold ${subTextColor}`}>
+                            {new Date(u.createdAt).toLocaleDateString()}
+                         </td>
+                         <td className="py-6 px-8 text-right">
+                            <button 
+                             onClick={() => {
+                               const amt = prompt('Amount to add/subtract (₦):');
+                               if (amt) adjustBalance(u._id, parseFloat(amt));
+                             }}
+                             className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase transition-all border ${isDark ? 'bg-white/5 border-white/10 hover:bg-primary' : 'bg-white border-slate-200 hover:bg-primary hover:text-white'}`}
+                            >
+                              Adjust Balance
+                            </button>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Notification Modal */}
+        <AnimatePresence>
+           {showNotifModal && (
+              <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowNotifModal(false)} />
+                 <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className={`relative w-full max-w-lg p-8 md:p-12 rounded-[2.5rem] border shadow-2xl z-[210] ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}>
+                    <h3 className={`text-3xl font-black mb-8 ${textColor}`}>New <span className="text-primary italic">Broadcast</span></h3>
+                    <form onSubmit={sendNotification} className="space-y-6">
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Title</label>
+                          <input 
+                            type="text" 
+                            required
+                            className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                            value={newNotif.title}
+                            onChange={(e) => setNewNotif({...newNotif, title: e.target.value})}
+                          />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Type</label>
+                          <select 
+                            className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-slate-900 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'}`}
+                            value={newNotif.type}
+                            onChange={(e) => setNewNotif({...newNotif, type: e.target.value})}
+                          >
+                             <option value="info">Information</option>
+                             <option value="warning">Warning</option>
+                             <option value="urgent">Urgent Alert</option>
+                          </select>
+                       </div>
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Message</label>
+                          <textarea 
+                            rows="4"
+                            required
+                            className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                            value={newNotif.message}
+                            onChange={(e) => setNewNotif({...newNotif, message: e.target.value})}
+                          />
+                       </div>
+                       <div className="flex gap-4 pt-4">
+                          <button type="submit" className="flex-1 btn-primary py-4 rounded-xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs">
+                             <TrendingUp size={18} /> Send Broadcast
+                          </button>
+                          <button type="button" onClick={() => setShowNotifModal(false)} className={`px-6 rounded-xl border font-bold text-[10px] uppercase transition-all ${isDark ? 'border-white/10 text-slate-400' : 'border-slate-200 text-slate-500'}`}>
+                             Cancel
+                          </button>
+                       </div>
+                    </form>
+                 </motion.div>
+              </div>
+           )}
         </AnimatePresence>
       </div>
     </div>

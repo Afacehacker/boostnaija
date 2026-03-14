@@ -67,6 +67,20 @@ const Settings = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        return toast.error("File size too large (Max 2MB)");
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileData({ ...profileData, avatar: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-500' : 'text-slate-400';
   const meshBg = isDark ? 'bg-cyber-mesh' : 'bg-light-mesh';
@@ -95,15 +109,15 @@ const Settings = () => {
             <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 relative z-10">
               <div className="relative group">
                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-primary/20 bg-primary/10 flex items-center justify-center">
-                    {profileData.avatar ? (
-                      <img src={profileData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                    {user?.avatar ? (
+                      <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-4xl font-black italic text-primary">{user?.name?.[0]?.toUpperCase()}</span>
                     )}
                  </div>
-                 <button className="absolute -bottom-1 -right-1 w-10 h-10 rounded-full bg-primary text-white border-4 border-white dark:border-slate-900 flex items-center justify-center hover:scale-110 transition-transform">
-                    <Camera size={18} />
-                 </button>
+                 <div className="absolute -bottom-1 -right-1 w-10 h-10 rounded-full bg-primary text-white border-4 border-white dark:border-slate-900 flex items-center justify-center">
+                    <ShieldCheck size={16} />
+                 </div>
               </div>
               
               <div className="flex-1 text-center md:text-left space-y-4">
@@ -182,43 +196,54 @@ const Settings = () => {
           <AnimatePresence>
             {editMode && (
               <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setEditMode(false)} />
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className={`relative w-full max-w-md p-8 md:p-12 rounded-[2.5rem] border shadow-2xl z-[210] ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setEditMode(false); setProfileData({ name: user?.name, email: user?.email, phone: user?.phone, avatar: user?.avatar }); }} />
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className={`relative w-full max-w-lg p-8 md:p-12 rounded-[2.5rem] border shadow-2xl z-[210] ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}>
                   <h3 className={`text-3xl font-black mb-8 ${textColor}`}>Edit <span className="text-primary italic">Profile</span></h3>
                   <form onSubmit={handleProfileUpdate} className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Full Name</label>
-                      <input 
-                        type="text" 
-                        className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
-                        value={profileData.name}
-                        onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                      />
+                    <div className="flex flex-col items-center gap-4 mb-8">
+                       <div className="relative group">
+                          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/20 bg-primary/10 flex items-center justify-center">
+                             {profileData.avatar ? (
+                               <img src={profileData.avatar} alt="New Avatar" className="w-full h-full object-cover" />
+                             ) : (
+                               <span className="text-4xl font-black italic text-primary">{user?.name?.[0]?.toUpperCase()}</span>
+                             )}
+                          </div>
+                          <label className="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                             <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                             <Camera size={24} />
+                          </label>
+                       </div>
+                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tap to change photo</p>
                     </div>
-                    <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Phone Number (Naija +234)</label>
-                       <input 
-                         type="text" 
-                         placeholder="0810 000 0000"
-                         className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
-                         value={profileData.phone}
-                         onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                       />
+
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Full Name</label>
+                        <input 
+                          type="text" 
+                          className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                          value={profileData.name}
+                          onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Phone Number</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. 0810 xxx xxxx"
+                          className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                          value={profileData.phone}
+                          onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Avatar URL</label>
-                       <input 
-                         type="text" 
-                         className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
-                         value={profileData.avatar}
-                         onChange={(e) => setProfileData({...profileData, avatar: e.target.value})}
-                       />
-                    </div>
+
                     <div className="flex gap-4 pt-4">
-                      <button type="submit" disabled={loading} className="flex-1 btn-primary py-4 rounded-xl flex items-center justify-center gap-2">
+                      <button type="submit" disabled={loading} className="flex-1 bg-primary text-white py-4 rounded-xl font-black flex items-center justify-center gap-2 hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-50">
                          <Save size={18} /> {loading ? 'Saving...' : 'Save Changes'}
                       </button>
-                      <button type="button" onClick={() => setEditMode(false)} className={`px-6 rounded-xl border font-bold text-xs uppercase transition-all ${isDark ? 'border-white/10 text-slate-400' : 'border-slate-200 text-slate-500'}`}>
+                      <button type="button" onClick={() => setEditMode(false)} className={`px-6 rounded-xl border font-bold text-[10px] uppercase tracking-widest transition-all ${isDark ? 'border-white/10 text-slate-400' : 'border-slate-200 text-slate-500 hover:text-slate-900'}`}>
                          Cancel
                       </button>
                     </div>
