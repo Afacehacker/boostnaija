@@ -38,6 +38,13 @@ const Dashboard = () => {
     }
   };
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-500' : 'text-slate-400';
   const meshBg = isDark ? 'bg-cyber-mesh' : 'bg-light-mesh';
@@ -66,7 +73,7 @@ const Dashboard = () => {
                  </div>
                  
                  <h1 className={`text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight ${textColor}`}>
-                   Welcome back, <br/><span className="text-primary italic">{user?.name.split(' ')[0]}!</span>
+                   {getGreeting()}, <br/><span className="text-primary italic">{user?.name.split(' ')[0]}!</span>
                  </h1>
                  
                  <p className={`text-base md:text-xl font-medium ${subTextColor} max-w-xl leading-relaxed`}>

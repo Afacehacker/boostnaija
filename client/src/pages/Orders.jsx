@@ -57,11 +57,12 @@ const Orders = () => {
 
   const textColor = isDark ? 'text-white' : 'text-slate-900';
   const subTextColor = isDark ? 'text-slate-500' : 'text-slate-400';
-  const meshBg = isDark ? 'bg-mesh-dark' : 'bg-mesh-light';
+  const meshBg = isDark ? 'bg-cyber-mesh' : 'bg-light-mesh';
 
   return (
-    <div className={`pt-24 md:pt-32 px-4 md:px-6 pb-32 max-w-7xl mx-auto transition-colors duration-500 ${meshBg}`}>
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-16">
+    <div className={`min-h-screen pt-24 md:pt-32 pb-40 transition-colors duration-500 ${meshBg}`}>
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-16">
         <div>
           <h1 className={`text-4xl md:text-5xl font-black mb-2 ${textColor}`}>Order <span className="text-primary italic">History</span></h1>
           <p className={`text-base md:text-lg font-medium ${subTextColor}`}>Track your social media growth orders in real-time.</p>
@@ -211,6 +212,7 @@ const Orders = () => {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };
