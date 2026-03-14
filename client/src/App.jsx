@@ -13,6 +13,7 @@ import Services from './pages/Services';
 import Orders from './pages/Orders';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TelegramWidget from './components/TelegramWidget';
@@ -121,6 +122,7 @@ function App() {
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="*" element={<NotFound />} />
             </Routes>
             <TelegramWidget />
             <MobileBottomNav />
