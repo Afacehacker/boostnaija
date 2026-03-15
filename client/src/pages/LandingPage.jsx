@@ -81,14 +81,13 @@ const LandingPage = () => {
                       Create Free Account
                     </Link>
                      <a
-                       href="https://www.tiktok.com/@boostnaija"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className={`py-4 md:py-5 rounded-xl md:rounded-2xl border-2 font-bold text-base flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'}`}
-                     >
-                       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.15 8.15 0 0 0 4.77 1.52V7.01a4.85 4.85 0 0 1-1-.32z"/></svg>
-                       Follow us on TikTok <span className="text-primary">@boostnaija</span>
-                     </a>
+                        href="https://t.me/everythinglogs01"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`py-4 md:py-5 rounded-xl md:rounded-2xl border-2 font-bold text-base flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'}`}
+                      >
+                        <Send size={20} className="text-[#0088cc]" /> Join Telegram Group
+                      </a>
                  </div>
               </div>
             </motion.div>
