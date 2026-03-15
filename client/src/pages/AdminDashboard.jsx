@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { 
   Users, BarChart3, RefreshCw, Settings, UserPlus, 
   DollarSign, Activity, Database, ShieldAlert, TrendingUp, Search, 
-  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell
+  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell, Trash2, ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
@@ -17,6 +17,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [searchUser, setSearchUser] = useState('');
+  const [orders, setOrders] = useState([]);
+  const [searchOrder, setSearchOrder] = useState('');
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [newNotif, setNewNotif] = useState({ title: '', message: '', type: 'info' });
   const { theme } = useTheme();
@@ -27,6 +29,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchAdminData();
     fetchNotifications();
+    fetchOrders();
   }, []);
 
   const fetchAdminData = async () => {
@@ -49,6 +52,26 @@ const AdminDashboard = () => {
       setNotifications(res.data.data);
     } catch (err) {
       console.error('Failed to fetch notifications');
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/admin/orders`);
+      setOrders(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch orders');
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+    try {
+      await axios.delete(`${API_URL}/admin/users/${userId}`);
+      toast.success('User deleted successfully');
+      fetchAdminData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete user');
     }
   };
 
@@ -125,7 +148,10 @@ const AdminDashboard = () => {
               <Database size={18} /> Sync Services
             </button>
             <button 
-              onClick={fetchAdminData} 
+              onClick={() => {
+                fetchAdminData();
+                fetchOrders();
+              }} 
               className={`p-4 rounded-2xl border transition-all ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}
             >
               <RefreshCw size={24} className={`${loading ? 'animate-spin' : ''} text-primary`} />
@@ -135,7 +161,7 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <div className={`flex gap-8 mb-12 border-b overflow-x-auto no-scrollbar ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-          {['overview', 'users', 'notifications', 'status'].map(tab => (
+          {['overview', 'users', 'orders', 'notifications', 'status'].map(tab => (
             <button 
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -291,15 +317,94 @@ const AdminDashboard = () => {
                             {new Date(u.createdAt).toLocaleDateString()}
                          </td>
                          <td className="py-6 px-8 text-right">
-                            <button 
-                             onClick={() => {
-                               const amt = prompt('Amount to add/subtract (₦):');
-                               if (amt) adjustBalance(u._id, parseFloat(amt));
-                             }}
-                             className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase transition-all border ${isDark ? 'bg-white/5 border-white/10 hover:bg-primary' : 'bg-white border-slate-200 hover:bg-primary hover:text-white'}`}
-                            >
-                              Adjust Balance
-                            </button>
+                             <div className="flex shrink-0 gap-2 justify-end">
+                                <button 
+                                 onClick={() => {
+                                   const amt = prompt('Amount to add/subtract (₦):');
+                                   if (amt) adjustBalance(u._id, parseFloat(amt));
+                                 }}
+                                 className={`px-4 py-3 rounded-xl text-[10px] font-bold uppercase transition-all border ${isDark ? 'bg-white/5 border-white/10 hover:bg-primary' : 'bg-white border-slate-200 hover:bg-primary hover:text-white'}`}
+                                >
+                                  Adjust Balance
+                                </button>
+                                <button 
+                                 onClick={() => deleteUser(u._id)}
+                                 className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                             </div>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'orders' && (
+            <motion.div 
+               key="orders"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className={`border rounded-[2rem] overflow-hidden shadow-xl ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-100'}`}
+            >
+               <div className="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <h3 className={`text-2xl font-black ${textColor}`}>Recent Orders</h3>
+                  <div className="relative w-full md:w-96">
+                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                     <input 
+                       type="text" 
+                       placeholder="Search orders..." 
+                       className={`w-full rounded-xl py-4 pl-12 pr-6 border outline-none focus:border-primary transition-all font-bold text-sm ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900 shadow-inner'}`}
+                       value={searchOrder}
+                       onChange={(e) => setSearchOrder(e.target.value)}
+                     />
+                  </div>
+               </div>
+               <div className="overflow-x-auto">
+                 <table className="w-full text-left min-w-[1000px]">
+                   <thead>
+                     <tr className={isDark ? 'bg-white/5' : 'bg-slate-50'}>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>User</th>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Order Details</th>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest ${subTextColor}`}>Status</th>
+                       <th className={`py-6 px-8 font-bold text-[10px] uppercase tracking-widest text-right ${subTextColor}`}>Date</th>
+                     </tr>
+                   </thead>
+                   <tbody className="divide-y divide-white/5">
+                     {orders.filter(o => 
+                        o.serviceName.toLowerCase().includes(searchOrder.toLowerCase()) || 
+                        o.userId?.name.toLowerCase().includes(searchOrder.toLowerCase()) ||
+                        o.externalOrderId?.includes(searchOrder)
+                     ).map(o => (
+                       <tr key={o._id} className={`transition-all ${isDark ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}>
+                         <td className="py-6 px-8">
+                            <p className={`font-bold text-base ${textColor}`}>{o.userId?.name || 'Deleted User'}</p>
+                            <p className={`text-[10px] ${subTextColor}`}>{o.userId?.email || '---'}</p>
+                         </td>
+                         <td className="py-6 px-8">
+                            <p className={`font-bold text-sm ${textColor}`}>{o.serviceName}</p>
+                            <div className="flex items-center gap-3">
+                               <p className="text-primary font-bold text-lg">₦{o.price.toLocaleString()}</p>
+                               <span className={`text-[10px] ${subTextColor}`}>Qty: {o.quantity.toLocaleString()}</span>
+                            </div>
+                            <a href={o.link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-[10px] font-bold inline-flex items-center gap-1">
+                               View Link <ExternalLink size={10} />
+                            </a>
+                         </td>
+                         <td className="py-6 px-8">
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold border inline-flex items-center gap-2 ${
+                               o.status === 'completed' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
+                               o.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
+                               'bg-blue-500/10 text-blue-500 border-blue-500/20'
+                            }`}>
+                               {o.status}
+                            </span>
+                         </td>
+                         <td className={`py-6 px-8 text-right text-xs font-bold ${subTextColor}`}>
+                            {new Date(o.createdAt).toLocaleString()}
                          </td>
                        </tr>
                      ))}
