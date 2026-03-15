@@ -73,21 +73,22 @@ const LandingPage = () => {
                  </p>
                  
                  <div className="grid gap-3 md:gap-4">
-                    <Link 
-                      to="/register" 
+                    <Link
+                      to="/register"
                       className="btn-primary py-4 md:py-5 rounded-xl md:rounded-2xl font-bold text-lg shadow-lg block hover:scale-[1.02] transition-transform"
                       onClick={() => setShowPopup(false)}
                     >
                       Create Free Account
                     </Link>
-                    <a 
-                      href="https://t.me/boostnaija"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`py-4 md:py-5 rounded-xl md:rounded-2xl border-2 font-bold text-base flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'}`}
-                    >
-                      <Send size={20} className="text-[#0088cc]" /> Join Telegram Group
-                    </a>
+                     <a
+                       href="https://www.tiktok.com/@boostnaija"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className={`py-4 md:py-5 rounded-xl md:rounded-2xl border-2 font-bold text-base flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'}`}
+                     >
+                       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.15 8.15 0 0 0 4.77 1.52V7.01a4.85 4.85 0 0 1-1-.32z"/></svg>
+                       Follow us on TikTok <span className="text-primary">@boostnaija</span>
+                     </a>
                  </div>
               </div>
             </motion.div>
@@ -100,14 +101,14 @@ const LandingPage = () => {
         <motion.div style={{ opacity, scale }} className="container mx-auto">
            <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="text-center lg:text-left space-y-8 md:space-y-10">
-                 <motion.div 
+                 <motion.div
                    initial={{ opacity: 0, scale: 0.8 }}
                    animate={{ opacity: 1, scale: 1 }}
                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 border border-primary/20 text-primary font-black uppercase tracking-[0.2em] text-[10px] md:text-xs"
                  >
                    <Sparkles size={16} /> #1 SMM PANEL IN NIGERIA 🇳🇬
                  </motion.div>
-                 
+
                  <h1 className={`text-5xl md:text-8xl font-black ${textColor} leading-[0.9] tracking-tighter`}>
                    BOOST YOUR <br />
                    <span className="text-primary italic">DIGITAL</span> <br />
@@ -145,18 +146,18 @@ const LandingPage = () => {
                  </div>
               </div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, rotateY: 20 }}
                 animate={{ opacity: 1, rotateY: 0 }}
                 className="hidden lg:block perspective-1000"
               >
                   <div className="relative rotate-y-12 transition-transform duration-700 hover:rotate-0">
-                     <img 
-                       src="/hero.png" 
-                       alt="Social Media Growth" 
+                     <img
+                       src="/hero.png"
+                       alt="Social Media Growth"
                        className="w-full h-auto rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-white/10"
                      />
-                     
+
                      {/* Growth Badge */}
                      <div className="absolute -top-4 -right-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-primary/20 shadow-xl text-center">
                         <TrendingUp className="text-primary mb-1 mx-auto" size={24} />
@@ -215,21 +216,21 @@ const LandingPage = () => {
                <p className="text-primary text-[10px] md:text-[12px] font-bold uppercase tracking-[0.4em] mb-4">Our Services</p>
                <h2 className={`text-4xl md:text-5xl font-black ${textColor} tracking-tight`}>WHY CHOOSE <span className="text-primary italic">BOOSTNAIJA?</span></h2>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-               <FeatureCard 
+               <FeatureCard
                  icon={<Zap className="text-primary" size={32} />}
                  title="Instant Delivery"
                  desc="No long thing o! Your followers and likes start coming in immediately after you pay. Automation at its best."
                  theme={theme}
                />
-               <FeatureCard 
+               <FeatureCard
                  icon={<ShieldCheck className="text-primary" size={32} />}
                  title="Safe & Secure"
                  desc="We never ask for your password. Our methods are 100% safe. Your account protection is our top priority."
                  theme={theme}
                />
-               <FeatureCard 
+               <FeatureCard
                  icon={<Database className="text-primary" size={32} />}
                  title="Cheapest in Naija"
                  desc="We offer the most affordable rates for high-quality SMM services. Grow your brand without breaking your wallet."
@@ -241,7 +242,7 @@ const LandingPage = () => {
 
       {/* CTA Section */}
       <section className="py-24 md:py-40 px-4 md:px-6 text-center">
-         <motion.div 
+         <motion.div
            initial={{ opacity: 0, scale: 0.95 }}
            whileInView={{ opacity: 1, scale: 1 }}
            className={`max-w-4xl mx-auto rounded-[2rem] md:rounded-[3.5rem] p-10 md:p-20 border ${borderCol} relative overflow-hidden shadow-xl ${isDark ? 'bg-slate-900' : 'bg-white'}`}
@@ -264,18 +265,19 @@ const LandingPage = () => {
                <div className="max-w-xs">
                   <h4 className={`text-3xl font-black mb-6 tracking-tighter ${textColor}`}>BOOST<span className="text-primary italic">NAIJA</span></h4>
                   <p className={`text-base ${subTextColor} font-medium mb-8`}>The most trusted and reliable SMM provider in Nigeria for quality social media growth.</p>
-                  <div className="flex gap-4">
-                     <SocialIcon icon={<Instagram size={20}/>} theme={theme} />
-                     <SocialIcon icon={<Twitter size={20}/>} theme={theme} />
-                     <SocialIcon icon={<Send size={20}/>} theme={theme} />
-                  </div>
+                   <div className="flex gap-4">
+                      <SocialIcon
+                        icon={<svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.15 8.15 0 0 0 4.77 1.52V7.01a4.85 4.85 0 0 1-1-.32z"/></svg>}
+                        href="https://www.tiktok.com/@boostnaija"
+                        theme={theme}
+                      />
+                   </div>
                </div>
-               
-               <div className="grid grid-cols-2 md:grid-cols-3 gap-10 md:gap-24 lg:gap-32">
-                  <FooterMenu title="Platform" links={['Home', 'Prices', 'API']} theme={theme} />
-                  <FooterMenu title="Company" links={['Contact', 'About Us', 'Terms']} theme={theme} />
-                  <FooterMenu title="Support" links={['WhatsApp', 'Telegram', 'Email']} theme={theme} />
-               </div>
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-10 md:gap-24 lg:gap-32">
+                   <FooterMenu title="Platform" links={['Home', 'Prices', 'API']} theme={theme} />
+                   <FooterMenu title="Company" links={['Contact', 'About Us', 'Terms']} theme={theme} />
+                   <FooterMenu title="Support" links={['TikTok: @boostnaija']} theme={theme} />
+                </div>
             </div>
             <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                <p className={`text-[10px] md:text-[12px] font-bold uppercase tracking-wider ${subTextColor} text-center`}>&copy; 2026 BOOSTNAIJA. ALL RIGHTS RESERVED.</p>
@@ -318,10 +320,10 @@ const FooterMenu = ({ title, links, theme }) => {
   );
 };
 
-const SocialIcon = ({ icon, theme }) => {
+const SocialIcon = ({ icon, href = '#', theme }) => {
   const isDark = theme === 'dark';
   return (
-    <a href="#" className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transition-all ${isDark ? 'bg-white/5 text-white hover:bg-primary' : 'bg-slate-100 text-slate-900 hover:bg-primary hover:text-white'}`}>
+    <a href={href} target={href !== '#' ? '_blank' : undefined} rel={href !== '#' ? 'noopener noreferrer' : undefined} className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transition-all ${isDark ? 'bg-white/5 text-white hover:bg-primary' : 'bg-slate-100 text-slate-900 hover:bg-primary hover:text-white'}`}>
       {icon}
     </a>
   );
