@@ -273,9 +273,19 @@ const LandingPage = () => {
                    </div>
                </div>
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-10 md:gap-24 lg:gap-32">
-                   <FooterMenu title="Platform" links={['Home', 'Prices', 'API']} theme={theme} />
-                   <FooterMenu title="Company" links={['Contact', 'About Us', 'Terms']} theme={theme} />
-                   <FooterMenu title="Support" links={['TikTok: @boostnaija']} theme={theme} />
+                   <FooterMenu title="Platform" links={[
+                     { label: 'Home', href: '/' },
+                     { label: 'Prices', href: '/dashboard/services' },
+                   ]} theme={theme} />
+                   <FooterMenu title="Company" links={[
+                     { label: 'Contact', href: 'https://www.tiktok.com/@boostnaija', external: true },
+                     { label: 'About Us', href: '/' },
+                     { label: 'Terms', href: '/terms' },
+                   ]} theme={theme} />
+                   <FooterMenu title="Support" links={[
+                     { label: 'TikTok: @boostnaija', href: 'https://www.tiktok.com/@boostnaija', external: true },
+                     { label: 'Telegram: @everythinglogs01', href: 'https://t.me/everythinglogs01', external: true },
+                   ]} theme={theme} />
                 </div>
             </div>
             <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
@@ -313,7 +323,15 @@ const FooterMenu = ({ title, links, theme }) => {
     <div className="text-left">
        <h5 className={`font-bold uppercase tracking-widest text-[10px] mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>{title}</h5>
        <ul className={`space-y-4 text-xs font-bold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-          {links.map(l => <li key={l}><a href="#" className="hover:text-primary transition-all">{l}</a></li>)}
+          {links.map(l => (
+            <li key={l.label}>
+              {l.external ? (
+                <a href={l.href} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-all">{l.label}</a>
+              ) : (
+                <Link to={l.href} className="hover:text-primary transition-all">{l.label}</Link>
+              )}
+            </li>
+          ))}
        </ul>
     </div>
   );

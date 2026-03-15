@@ -14,6 +14,7 @@ import Orders from './pages/Orders';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
+import TermsAndConditions from './pages/TermsAndConditions';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TelegramWidget from './components/TelegramWidget';
@@ -39,7 +40,8 @@ const AppEnrichment = () => {
       '/dashboard/services': 'Services | SMM Packages',
       '/dashboard/orders': 'Orders | History',
       '/dashboard/settings': 'Settings | Account',
-      '/staff-portal-99': 'Admin | BoostNaija'
+      '/staff-portal-99': 'Admin | BoostNaija',
+      '/terms': 'Terms & Conditions | BoostNaija'
     };
     
     document.title = titles[pathname] || 'BoostNaija | Premium SMM Nigeria';
@@ -122,6 +124,7 @@ function App() {
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <TelegramWidget />

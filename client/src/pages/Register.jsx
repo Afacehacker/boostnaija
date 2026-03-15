@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   
   const { register } = useAuth();
   const { theme } = useTheme();
@@ -17,6 +18,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!agreedToTerms) {
+      toast.error('You must accept the Terms & Conditions to register.');
+      return;
+    }
     setLoading(true);
     try {
       await register(formData.name, formData.email, formData.password);
@@ -131,9 +136,41 @@ const Register = () => {
                   </div>
                 </div>
 
+                {/* Terms & Conditions */}
+                <div
+                  onClick={() => setAgreedToTerms(!agreedToTerms)}
+                  className={`flex items-start gap-4 p-4 rounded-2xl border cursor-pointer transition-all select-none ${
+                    agreedToTerms
+                      ? 'border-primary/50 bg-primary/5'
+                      : isDark ? 'border-white/10 bg-white/5 hover:border-white/20' : 'border-slate-200 bg-slate-50 hover:border-slate-300'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                    agreedToTerms ? 'bg-primary border-primary' : isDark ? 'border-white/30' : 'border-slate-300'
+                  }`}>
+                    {agreedToTerms && (
+                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                  <p className={`text-sm font-medium leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                    I have read and agree to the{' '}
+                    <Link
+                      to="/terms"
+                      target="_blank"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-primary font-black hover:underline underline-offset-4 decoration-2"
+                    >
+                      Terms & Conditions
+                    </Link>{' '}
+                    of BoostNaija. I understand that my wallet funds are non-refundable.
+                  </p>
+                </div>
+
                 <button 
-                  disabled={loading}
-                  className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-50 group"
+                  disabled={loading || !agreedToTerms}
+                  className="w-full bg-primary text-white py-6 rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-primary/90 transition-all shadow-2xl shadow-primary/30 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed group"
                 >
                   {loading ? 'Creating Account...' : 'Join BoostNaija 🚀'}
                   <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
