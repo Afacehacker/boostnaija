@@ -81,7 +81,7 @@ const LandingPage = () => {
                       Create Free Account
                     </Link>
                      <a
-                        href="https://t.me/everythinglogs01"
+                        href="https://t.me/boostnaija1"
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`py-4 md:py-5 rounded-xl md:rounded-2xl border-2 font-bold text-base flex items-center justify-center gap-3 transition-all ${isDark ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'}`}
@@ -284,7 +284,7 @@ const LandingPage = () => {
                    ]} theme={theme} />
                    <FooterMenu title="Support" links={[
                      { label: 'TikTok: @boostnaija', href: 'https://www.tiktok.com/@boostnaija', external: true },
-                     { label: 'Telegram: @everythinglogs01', href: 'https://t.me/everythinglogs01', external: true },
+                     { label: 'Telegram: @boostnaija', href: 'https://t.me/boostnaija1', external: true },
                    ]} theme={theme} />
                 </div>
             </div>

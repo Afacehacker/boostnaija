@@ -123,9 +123,9 @@ const TermsAndConditions = () => {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary font-black text-sm hover:bg-primary hover:text-white transition-all">
               TikTok: @boostnaija
             </a>
-            <a href="https://t.me/everythinglogs01" target="_blank" rel="noopener noreferrer"
+            <a href="https://t.me/boostnaija1" target="_blank" rel="noopener noreferrer"
               className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl border font-black text-sm transition-all ${isDark ? 'border-white/10 text-slate-300 hover:bg-white/5' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
-              Telegram: @everythinglogs01
+              Telegram: @boostnaija
             </a>
           </div>
         </div>
