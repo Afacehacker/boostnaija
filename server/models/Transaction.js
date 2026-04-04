@@ -17,17 +17,21 @@ const transactionSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'success', 'failed'],
+    enum: ['pending', 'success', 'failed', 'rejected'],
     default: 'pending'
   },
   paymentGateway: {
     type: String,
-    enum: ['paystack', 'flutterwave', 'system'],
+    enum: ['paystack', 'flutterwave', 'system', 'manual'],
     default: 'system'
   },
   reference: {
     type: String,
-    unique: true
+    unique: true,
+    sparse: true
+  },
+  receipt: {
+    type: String // URL to uploaded image
   },
   metadata: {
     type: Object

@@ -20,7 +20,11 @@ const orderStatusChecker = cron.schedule('*/2 * * * *', async () => {
       const statusData = statuses[order.externalOrderId];
       
       if (statusData && statusData.status) {
-        order.status = statusData.status.toLowerCase();
+        let newStatus = statusData.status.toLowerCase();
+        // Normalize status mappings between provider and our model
+        if (newStatus === 'canceled') newStatus = 'cancelled';
+        
+        order.status = newStatus;
         order.start_count = statusData.start_count;
         order.remains = statusData.remains;
         await order.save();

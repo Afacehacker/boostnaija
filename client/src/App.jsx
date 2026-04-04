@@ -17,7 +17,7 @@ import NotFound from './pages/NotFound';
 import TermsAndConditions from './pages/TermsAndConditions';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TelegramWidget from './components/TelegramWidget';
+import SupportChatWidget from './components/SupportChatWidget';
 import MobileBottomNav from './components/MobileBottomNav';
 
 // Ensures document title updates and navigation scrolls to top
@@ -127,7 +127,7 @@ function App() {
               <Route path="/terms" element={<TermsAndConditions />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <TelegramWidget />
+            <SupportChatWidget />
             <MobileBottomNav />
             <ToastContainer position="bottom-right" theme="dark" />
           </div>

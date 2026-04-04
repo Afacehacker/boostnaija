@@ -16,6 +16,7 @@ const orders = require('./routes/orderRoutes');
 const payments = require('./routes/paymentRoutes');
 const admin = require('./routes/adminRoutes');
 const notifications = require('./routes/notificationRoutes');
+const support = require('./routes/supportRoutes');
 const orderStatusChecker = require('./jobs/orderStatusChecker');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/api/orders', orders);
 app.use('/api/payments', payments);
 app.use('/api/admin', admin);
 app.use('/api/notifications', notifications);
+app.use('/api/support', support);
 
 // Basic route
 app.get('/', (req, res) => {

@@ -21,6 +21,11 @@ const AdminDashboard = () => {
   const [searchOrder, setSearchOrder] = useState('');
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [newNotif, setNewNotif] = useState({ title: '', message: '', type: 'info' });
+  const [pendingPayments, setPendingPayments] = useState([]);
+  const [chats, setChats] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [reply, setReply] = useState('');
   const { theme } = useTheme();
 
   const isDark = theme === 'dark';
@@ -30,6 +35,8 @@ const AdminDashboard = () => {
     fetchAdminData();
     fetchNotifications();
     fetchOrders();
+    fetchPendingPayments();
+    fetchChats();
   }, []);
 
   const fetchAdminData = async () => {
@@ -61,6 +68,57 @@ const AdminDashboard = () => {
       setOrders(res.data.data);
     } catch (err) {
       console.error('Failed to fetch orders');
+    }
+  };
+
+  const fetchPendingPayments = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/payments/manual/pending`);
+      setPendingPayments(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch pending payments');
+    }
+  };
+
+  const fetchChats = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/support/admin/chats`);
+      setChats(res.data.data);
+    } catch (err) {
+      console.error('Failed to fetch chats');
+    }
+  };
+
+  const fetchUserChat = async (userId) => {
+    try {
+      const res = await axios.get(`${API_URL}/support/admin/chats/${userId}`);
+      setMessages(res.data.data);
+      setSelectedChat(userId);
+    } catch (err) {
+      toast.error('Failed to load chat');
+    }
+  };
+
+  const handleReply = async (e) => {
+    e.preventDefault();
+    if (!reply.trim()) return;
+    try {
+      await axios.post(`${API_URL}/support/reply/${selectedChat}`, { message: reply });
+      setReply('');
+      fetchUserChat(selectedChat);
+    } catch (err) {
+      toast.error('Failed to send reply');
+    }
+  };
+
+  const processPayment = async (id, status) => {
+    try {
+      await axios.put(`${API_URL}/payments/manual/${id}`, { status });
+      toast.success(`Payment ${status === 'success' ? 'confirmed' : 'rejected'}`);
+      fetchPendingPayments();
+      fetchAdminData();
+    } catch (err) {
+      toast.error('Action failed');
     }
   };
 
@@ -161,7 +219,7 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <div className={`flex gap-8 mb-12 border-b overflow-x-auto no-scrollbar ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-          {['overview', 'users', 'orders', 'notifications', 'status'].map(tab => (
+          {['overview', 'users', 'orders', 'payments', 'support', 'notifications', 'status'].map(tab => (
             <button 
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -410,6 +468,131 @@ const AdminDashboard = () => {
                      ))}
                    </tbody>
                  </table>
+               </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'payments' && (
+            <motion.div 
+               key="payments"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="space-y-8"
+            >
+               <h3 className={`text-2xl font-black ${textColor}`}>Manual Payments Confirmation</h3>
+               {pendingPayments.length > 0 ? (
+                 <div className="grid md:grid-cols-2 gap-8">
+                    {pendingPayments.map(p => (
+                      <div key={p._id} className={`p-8 rounded-[2rem] border ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100 shadow-lg'}`}>
+                         <div className="flex justify-between items-start mb-6">
+                            <div>
+                               <p className={`font-bold ${textColor}`}>{p.user?.name}</p>
+                               <p className={`text-[10px] ${subTextColor}`}>{p.user?.email}</p>
+                            </div>
+                            <p className="text-primary font-black text-2xl italic">₦{p.amount.toLocaleString()}</p>
+                         </div>
+                         
+                         <div className="mb-6 rounded-xl overflow-hidden border border-white/5">
+                            <img src={p.receipt} alt="receipt" className="w-full h-auto max-h-64 object-contain bg-black/20" />
+                         </div>
+
+                         <div className="flex gap-4">
+                            <button 
+                              onClick={() => processPayment(p._id, 'success')}
+                              className="flex-1 py-4 rounded-xl bg-green-500 text-white font-bold text-xs uppercase tracking-widest hover:bg-green-600 transition-all"
+                            >
+                               Confirm Payment
+                            </button>
+                            <button 
+                              onClick={() => processPayment(p._id, 'rejected')}
+                              className="px-6 py-4 rounded-xl border border-red-500/20 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                            >
+                               Reject
+                            </button>
+                         </div>
+                      </div>
+                    ))}
+                 </div>
+               ) : (
+                 <div className="p-20 text-center opacity-30">
+                    <p className={`text-lg font-bold ${subTextColor}`}>No pending payments to confirm.</p>
+                 </div>
+               )}
+            </motion.div>
+          )}
+
+          {activeTab === 'support' && (
+            <motion.div 
+               key="support"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="grid lg:grid-cols-3 gap-8"
+            >
+               {/* Chat List */}
+               <div className={`lg:col-span-1 rounded-[2rem] border overflow-hidden ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}>
+                  <div className="p-6 border-b border-white/5">
+                     <h4 className={`font-black ${textColor}`}>Messages</h4>
+                  </div>
+                  <div className="divide-y divide-white/5 overflow-y-auto max-h-[600px]">
+                     {chats.map(chat => (
+                        <button 
+                          key={chat._id}
+                          onClick={() => fetchUserChat(chat._id)}
+                          className={`w-full p-6 text-left transition-all hover:bg-primary/5 ${selectedChat === chat._id ? 'bg-primary/10 border-l-4 border-primary' : ''}`}
+                        >
+                           <div className="flex justify-between items-start mb-1">
+                              <p className={`font-bold text-sm ${textColor}`}>{chat.user.name}</p>
+                              {chat.unreadCount > 0 && (
+                                <span className="bg-primary text-white text-[8px] font-black px-2 py-1 rounded-full">{chat.unreadCount}</span>
+                              )}
+                           </div>
+                           <p className={`text-[10px] truncate ${subTextColor}`}>{chat.lastMessage}</p>
+                        </button>
+                     ))}
+                  </div>
+               </div>
+
+               {/* Chat View */}
+               <div className={`lg:col-span-2 rounded-[2rem] border flex flex-col h-[600px] overflow-hidden ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}>
+                  {selectedChat ? (
+                    <>
+                      <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+                         <h4 className={`font-black ${textColor}`}>Chat Thread</h4>
+                         <button onClick={() => fetchUserChat(selectedChat)} className="p-2 rounded-lg hover:bg-white/10 text-primary">
+                            <RefreshCw size={18} />
+                         </button>
+                      </div>
+                      <div className="flex-1 p-6 overflow-y-auto space-y-4">
+                         {messages.map((m, i) => (
+                           <div key={i} className={`flex ${m.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
+                              <div className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium ${m.sender === 'admin' ? 'bg-primary text-white rounded-tr-none' : `${isDark ? 'bg-white/10 text-slate-200' : 'bg-slate-100 text-slate-800'} rounded-tl-none`}`}>
+                                 {m.message}
+                                 <p className="text-[8px] mt-1 opacity-50 uppercase font-black">{new Date(m.createdAt).toLocaleTimeString()}</p>
+                              </div>
+                           </div>
+                         ))}
+                      </div>
+                      <form onSubmit={handleReply} className="p-6 border-t border-white/5 bg-white/5">
+                         <div className="flex gap-4">
+                            <input 
+                              type="text" 
+                              placeholder="Type your reply..."
+                              className={`flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary transition-all font-bold text-sm ${textColor}`}
+                              value={reply}
+                              onChange={(e) => setReply(e.target.value)}
+                            />
+                            <button type="submit" className="p-4 rounded-xl bg-primary text-white hover:scale-105 transition-all shadow-lg">
+                               <ArrowRight size={24} />
+                            </button>
+                         </div>
+                      </form>
+                    </>
+                  ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center opacity-20 p-10 text-center">
+                       <Activity size={80} className="mb-6" />
+                       <p className={`text-xl font-black ${textColor}`}>Select a chat to view messages</p>
+                    </div>
+                  )}
                </div>
             </motion.div>
           )}

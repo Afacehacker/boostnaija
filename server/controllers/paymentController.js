@@ -95,3 +95,81 @@ exports.paystackWebhook = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+// @desc    Submit Manual Payment Receipt
+// @route   POST /api/payments/manual/submit
+// @access  Private
+exports.submitManualPayment = async (req, res) => {
+  try {
+    const { amount, receipt } = req.body;
+    if (!amount || !receipt) {
+      return res.status(400).json({ success: false, message: 'Amount and receipt are required' });
+    }
+
+    const transaction = await Transaction.create({
+      user: req.user.id,
+      amount: parseFloat(amount),
+      type: 'deposit',
+      status: 'pending',
+      paymentGateway: 'manual',
+      receipt: receipt // Expecting base64 or URL
+    });
+
+    res.status(201).json({ success: true, data: transaction, message: 'Payment submitted for confirmation' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// @desc    Update Transaction Status (Admin Only)
+// @route   PUT /api/payments/manual/:id
+// @access  Private/Admin
+exports.updateTransactionStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const transaction = await Transaction.findById(req.params.id).populate('user');
+
+    if (!transaction) {
+      return res.status(404).json({ success: false, message: 'Transaction not found' });
+    }
+
+    if (transaction.status !== 'pending') {
+      return res.status(400).json({ success: false, message: 'Transaction already processed' });
+    }
+
+    if (status === 'success') {
+      const user = await User.findById(transaction.user._id);
+      user.walletBalance += transaction.amount;
+      await user.save();
+      transaction.status = 'success';
+    } else if (status === 'rejected') {
+      transaction.status = 'rejected';
+    } else {
+      return res.status(400).json({ success: false, message: 'Invalid status' });
+    }
+
+    await transaction.save();
+
+    res.status(200).json({ 
+      success: true, 
+      message: status === 'success' ? 'Payment confirmed and balance added' : 'Payment rejected' 
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+// @desc    Get All Pending Manual Payments (Admin Only)
+// @route   GET /api/payments/manual/pending
+// @access  Private/Admin
+exports.getPendingManualPayments = async (req, res) => {
+  try {
+    const payments = await Transaction.find({ 
+      paymentGateway: 'manual', 
+      status: 'pending' 
+    }).populate('user', 'name email').sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: payments });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
