@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { 
   Users, BarChart3, RefreshCw, Settings, UserPlus, 
   DollarSign, Activity, Database, ShieldAlert, TrendingUp, Search, 
-  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell, Trash2, ExternalLink
+  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell, Trash2, ExternalLink, ArrowRight, Send
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
