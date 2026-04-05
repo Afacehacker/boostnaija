@@ -6,11 +6,12 @@ const User = require('../models/User');
 // @access  Private
 exports.sendMessage = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, image } = req.body;
     const supportMessage = await SupportMessage.create({
       user: req.user.id,
       sender: req.user.role === 'admin' ? 'admin' : 'user',
-      message
+      message,
+      image
     });
     res.status(201).json({ success: true, data: supportMessage });
   } catch (err) {
@@ -23,13 +24,14 @@ exports.sendMessage = async (req, res) => {
 // @access  Private/Admin
 exports.replyMessage = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, image } = req.body;
     const { userId } = req.params;
 
     const supportMessage = await SupportMessage.create({
       user: userId,
       sender: 'admin',
-      message
+      message,
+      image
     });
 
     res.status(201).json({ success: true, data: supportMessage });

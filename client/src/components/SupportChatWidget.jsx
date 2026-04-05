@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, ArrowRight, RefreshCw, Activity } from 'lucide-react';
+import { MessageCircle, X, Send, ArrowRight, RefreshCw, Activity, Image as ImageIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 const SupportChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user, token } = useAuth();
@@ -31,6 +33,17 @@ const SupportChatWidget = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const fetchHistory = async () => {
     try {
       const res = await axios.get(`${API_URL}/support`, {
@@ -44,16 +57,17 @@ const SupportChatWidget = () => {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!message.trim() || !user) return;
+    if ((!message.trim() && !preview) || !user) return;
 
     setLoading(true);
     try {
       const res = await axios.post(`${API_URL}/support`, 
-        { message },
+        { message, image: preview },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setChatHistory([...chatHistory, res.data.data]);
       setMessage('');
+      setPreview(null);
       fetchHistory(); // Refresh to ensure we have any new admin replies
     } catch (err) {
       console.error('Failed to send message');
@@ -97,7 +111,10 @@ const SupportChatWidget = () => {
                  chatHistory.map((m, i) => (
                    <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-medium ${m.sender === 'user' ? 'bg-primary text-white rounded-tr-none' : `${isDark ? 'bg-white/10 text-slate-200' : 'bg-slate-100 text-slate-800'} rounded-tl-none`}`}>
-                         {m.message}
+                         {m.image && (
+                            <img src={m.image} alt="attachment" className="rounded-lg mb-2 max-w-full h-auto cursor-pointer" onClick={() => window.open(m.image, '_blank')} />
+                         )}
+                         {m.message && <p>{m.message}</p>}
                          <p className="text-[8px] mt-1 opacity-50 uppercase font-bold text-right">{new Date(m.createdAt).toLocaleTimeString()}</p>
                       </div>
                    </div>
@@ -112,23 +129,50 @@ const SupportChatWidget = () => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSend} className="p-6 border-t border-white/5">
-              <div className="relative">
+            <form onSubmit={handleSend} className="p-6 border-t border-white/5 bg-white/5">
+              {preview && (
+                 <div className="relative mb-4 inline-block">
+                    <img src={preview} alt="preview" className="h-20 w-20 object-cover rounded-lg border-2 border-primary" />
+                    <button 
+                      type="button" 
+                      onClick={() => setPreview(null)}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:scale-110 transition-all"
+                    >
+                       <X size={12} />
+                    </button>
+                 </div>
+              )}
+              <div className="flex gap-2">
                 <input 
-                  type="text" 
-                  placeholder="Ask anything..."
-                  className={`w-full rounded-xl py-4 pl-6 pr-12 outline-none border transition-all font-bold text-sm ${isDark ? 'bg-white/5 border-white/10 text-white focus:border-primary' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-primary'}`}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  disabled={loading}
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  id="chat-image-user"
+                  className="hidden"
                 />
-                <button 
-                  type="submit" 
-                  disabled={loading || !message.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:scale-110 transition-transform disabled:opacity-30"
+                <label 
+                  htmlFor="chat-image-user"
+                  className={`p-4 rounded-xl border border-white/10 flex items-center justify-center cursor-pointer transition-all ${isDark ? 'hover:bg-white/5 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
                 >
-                  {loading ? <RefreshCw className="animate-spin" size={20} /> : <Send size={20} />}
-                </button>
+                   <ImageIcon size={20} />
+                </label>
+                <div className="relative flex-1">
+                  <input 
+                    type="text" 
+                    placeholder="Ask anything..."
+                    className={`w-full rounded-xl py-4 pl-6 pr-12 outline-none border transition-all font-bold text-sm ${isDark ? 'bg-white/5 border-white/10 text-white focus:border-primary' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-primary'}`}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    disabled={loading}
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={loading || (!message.trim() && !preview)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:scale-110 transition-transform disabled:opacity-30"
+                  >
+                    {loading ? <RefreshCw className="animate-spin" size={20} /> : <Send size={20} />}
+                  </button>
+                </div>
               </div>
             </form>
           </motion.div>

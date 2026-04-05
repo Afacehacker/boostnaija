@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { 
   Users, BarChart3, RefreshCw, Settings, UserPlus, 
   DollarSign, Activity, Database, ShieldAlert, TrendingUp, Search, 
-  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell, Trash2, ExternalLink, ArrowRight, Send
+  Pocket, Zap, Terminal, Lock, Globe, Cpu, Layers, Plus, Bell, Trash2, ExternalLink, ArrowRight, Send, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
@@ -26,6 +26,7 @@ const AdminDashboard = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [reply, setReply] = useState('');
+  const [replyImage, setReplyImage] = useState(null);
   const { theme } = useTheme();
 
   const isDark = theme === 'dark';
@@ -101,13 +102,28 @@ const AdminDashboard = () => {
 
   const handleReply = async (e) => {
     e.preventDefault();
-    if (!reply.trim()) return;
+    if (!reply.trim() && !replyImage) return;
     try {
-      await axios.post(`${API_URL}/support/reply/${selectedChat}`, { message: reply });
+      await axios.post(`${API_URL}/support/reply/${selectedChat}`, { 
+        message: reply,
+        image: replyImage 
+      });
       setReply('');
+      setReplyImage(null);
       fetchUserChat(selectedChat);
     } catch (err) {
       toast.error('Failed to send reply');
+    }
+  };
+
+  const handleAdminFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReplyImage(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -566,14 +582,42 @@ const AdminDashboard = () => {
                          {messages.map((m, i) => (
                            <div key={i} className={`flex ${m.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
                               <div className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium ${m.sender === 'admin' ? 'bg-primary text-white rounded-tr-none' : `${isDark ? 'bg-white/10 text-slate-200' : 'bg-slate-100 text-slate-800'} rounded-tl-none`}`}>
-                                 {m.message}
+                                 {m.image && (
+                                    <img src={m.image} alt="attachment" className="rounded-lg mb-2 max-w-full h-auto cursor-pointer" onClick={() => window.open(m.image, '_blank')} />
+                                 )}
+                                 {m.message && <p>{m.message}</p>}
                                  <p className="text-[8px] mt-1 opacity-50 uppercase font-black">{new Date(m.createdAt).toLocaleTimeString()}</p>
                               </div>
                            </div>
                          ))}
                       </div>
                       <form onSubmit={handleReply} className="p-6 border-t border-white/5 bg-white/5">
+                         {replyImage && (
+                            <div className="relative mb-4 inline-block">
+                               <img src={replyImage} alt="preview" className="h-20 w-20 object-cover rounded-lg border-2 border-primary" />
+                               <button 
+                                 type="button" 
+                                 onClick={() => setReplyImage(null)}
+                                 className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:scale-110 transition-all"
+                               >
+                                  <X size={12} />
+                               </button>
+                            </div>
+                         )}
                          <div className="flex gap-4">
+                            <input 
+                              type="file" 
+                              accept="image/*"
+                              onChange={handleAdminFileChange}
+                              id="chat-image-admin"
+                              className="hidden"
+                            />
+                            <label 
+                              htmlFor="chat-image-admin"
+                              className={`p-4 rounded-xl border border-white/10 flex items-center justify-center cursor-pointer transition-all ${isDark ? 'hover:bg-white/5 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
+                            >
+                               <ImageIcon size={24} />
+                            </label>
                             <input 
                               type="text" 
                               placeholder="Type your reply..."
@@ -581,7 +625,7 @@ const AdminDashboard = () => {
                               value={reply}
                               onChange={(e) => setReply(e.target.value)}
                             />
-                            <button type="submit" className="p-4 rounded-xl bg-primary text-white hover:scale-105 transition-all shadow-lg">
+                            <button type="submit" className="p-4 rounded-xl bg-primary text-white hover:scale-105 transition-all shadow-lg" disabled={!reply.trim() && !replyImage}>
                                <ArrowRight size={24} />
                             </button>
                          </div>
