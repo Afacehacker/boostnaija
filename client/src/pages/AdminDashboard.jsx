@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { 
   Users, BarChart3, RefreshCw, Settings, UserPlus, 
   DollarSign, Activity, Database, ShieldAlert, TrendingUp, Search, 
@@ -28,6 +29,7 @@ const AdminDashboard = () => {
   const [reply, setReply] = useState('');
   const [replyImage, setReplyImage] = useState(null);
   const { theme } = useTheme();
+  const { token } = useAuth();
 
   const isDark = theme === 'dark';
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -43,9 +45,13 @@ const AdminDashboard = () => {
   const fetchAdminData = async () => {
     setLoading(true);
     try {
-      const statsRes = await axios.get(`${API_URL}/admin/stats`);
+      const statsRes = await axios.get(`${API_URL}/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setStats(statsRes.data.data);
-      const usersRes = await axios.get(`${API_URL}/admin/users`);
+      const usersRes = await axios.get(`${API_URL}/admin/users`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setUsers(usersRes.data.data);
     } catch (err) {
       toast.error('Failed to load admin data');
@@ -56,7 +62,9 @@ const AdminDashboard = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get(`${API_URL}/notifications`);
+      const res = await axios.get(`${API_URL}/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setNotifications(res.data.data);
     } catch (err) {
       console.error('Failed to fetch notifications');
@@ -65,7 +73,9 @@ const AdminDashboard = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${API_URL}/admin/orders`);
+      const res = await axios.get(`${API_URL}/admin/orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setOrders(res.data.data);
     } catch (err) {
       console.error('Failed to fetch orders');
@@ -74,7 +84,9 @@ const AdminDashboard = () => {
 
   const fetchPendingPayments = async () => {
     try {
-      const res = await axios.get(`${API_URL}/payments/manual/pending`);
+      const res = await axios.get(`${API_URL}/payments/manual/pending`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setPendingPayments(res.data.data);
     } catch (err) {
       console.error('Failed to fetch pending payments');
@@ -83,7 +95,9 @@ const AdminDashboard = () => {
 
   const fetchChats = async () => {
     try {
-      const res = await axios.get(`${API_URL}/support/admin/chats`);
+      const res = await axios.get(`${API_URL}/support/admin/chats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setChats(res.data.data);
     } catch (err) {
       console.error('Failed to fetch chats');
@@ -92,7 +106,9 @@ const AdminDashboard = () => {
 
   const fetchUserChat = async (userId) => {
     try {
-      const res = await axios.get(`${API_URL}/support/admin/chats/${userId}`);
+      const res = await axios.get(`${API_URL}/support/admin/chats/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setMessages(res.data.data);
       setSelectedChat(userId);
     } catch (err) {
@@ -104,10 +120,10 @@ const AdminDashboard = () => {
     e.preventDefault();
     if (!reply.trim() && !replyImage) return;
     try {
-      await axios.post(`${API_URL}/support/reply/${selectedChat}`, { 
-        message: reply,
-        image: replyImage 
-      });
+      await axios.post(`${API_URL}/support/reply/${selectedChat}`, 
+        { message: reply, image: replyImage },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setReply('');
       setReplyImage(null);
       fetchUserChat(selectedChat);
@@ -161,7 +177,10 @@ const AdminDashboard = () => {
 
   const processPayment = async (id, status) => {
     try {
-      await axios.put(`${API_URL}/payments/manual/${id}`, { status });
+      await axios.put(`${API_URL}/payments/manual/${id}`, 
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       toast.success(`Payment ${status === 'success' ? 'confirmed' : 'rejected'}`);
       fetchPendingPayments();
       fetchAdminData();
@@ -173,7 +192,9 @@ const AdminDashboard = () => {
   const deleteUser = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
     try {
-      await axios.delete(`${API_URL}/admin/users/${userId}`);
+      await axios.delete(`${API_URL}/admin/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('User deleted successfully');
       fetchAdminData();
     } catch (err) {
@@ -184,7 +205,9 @@ const AdminDashboard = () => {
   const sendNotification = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/notifications`, newNotif);
+      await axios.post(`${API_URL}/notifications`, newNotif, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Broadcast sent to all agents! 📢');
       setShowNotifModal(false);
       setNewNotif({ title: '', message: '', type: 'info' });
@@ -196,7 +219,9 @@ const AdminDashboard = () => {
 
   const deleteNotification = async (id) => {
     try {
-      await axios.delete(`${API_URL}/notifications/${id}`);
+      await axios.delete(`${API_URL}/notifications/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Notification removed');
       fetchNotifications();
     } catch (err) {
@@ -207,7 +232,9 @@ const AdminDashboard = () => {
   const syncServices = async () => {
     try {
       toast.info('Syncing services with provider...');
-      await axios.post(`${API_URL}/services/sync`);
+      await axios.post(`${API_URL}/services/sync`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Services synchronized successfully');
     } catch (err) {
       toast.error('Failed to sync services');
@@ -216,7 +243,10 @@ const AdminDashboard = () => {
 
   const adjustBalance = async (userId, amount) => {
     try {
-      await axios.put(`${API_URL}/admin/users/${userId}/balance`, { amount });
+      await axios.put(`${API_URL}/admin/users/${userId}/balance`, 
+        { amount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       toast.success('Balance updated successfully');
       fetchAdminData();
     } catch (err) {
