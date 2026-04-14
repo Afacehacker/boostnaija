@@ -148,15 +148,15 @@ const Wallet = () => {
                  <div className="space-y-4">
                     <div>
                        <p className={`text-[10px] font-bold ${subTextColor} uppercase`}>Bank Name</p>
-                       <h3 className={`text-2xl font-black ${textColor}`}>Paystack Titan</h3>
+                       <h3 className={`text-2xl font-black ${textColor}`}>Mint - Finex MFB</h3>
                     </div>
                     <div>
                        <p className={`text-[10px] font-bold ${subTextColor} uppercase`}>Account Number</p>
-                       <h3 className="text-4xl md:text-5xl font-black text-primary tracking-tighter">9732836416</h3>
+                       <h3 className="text-4xl md:text-5xl font-black text-primary tracking-tighter">1008155188</h3>
                     </div>
                     <div>
                        <p className={`text-[10px] font-bold ${subTextColor} uppercase`}>Account Name</p>
-                       <h3 className={`text-2xl font-black ${textColor}`}>Salaudeen Afeez</h3>
+                       <h3 className={`text-2xl font-black ${textColor}`}>salaudeen Afeez</h3>
                     </div>
                  </div>
                  
