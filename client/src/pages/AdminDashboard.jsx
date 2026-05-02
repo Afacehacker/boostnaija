@@ -28,6 +28,12 @@ const AdminDashboard = () => {
   const [messages, setMessages] = useState([]);
   const [reply, setReply] = useState('');
   const [replyImage, setReplyImage] = useState(null);
+  const [platformSettings, setPlatformSettings] = useState({
+    bankName: '',
+    accountNumber: '',
+    accountName: '',
+    telegramLink: ''
+  });
   const { theme } = useTheme();
   const { token } = useAuth();
 
@@ -40,6 +46,7 @@ const AdminDashboard = () => {
     fetchOrders();
     fetchPendingPayments();
     fetchChats();
+    fetchPlatformSettings();
   }, []);
 
   const fetchAdminData = async () => {
@@ -57,6 +64,29 @@ const AdminDashboard = () => {
       toast.error('Failed to load admin data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPlatformSettings = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/settings`);
+      if (res.data) {
+        setPlatformSettings(res.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch platform settings');
+    }
+  };
+
+  const updatePlatformSettings = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${API_URL}/settings`, platformSettings, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Platform settings updated successfully');
+    } catch (err) {
+      toast.error('Failed to update platform settings');
     }
   };
 
@@ -297,7 +327,7 @@ const AdminDashboard = () => {
 
         {/* Tabs */}
         <div className={`flex gap-8 mb-12 border-b overflow-x-auto no-scrollbar ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-          {['overview', 'users', 'orders', 'payments', 'support', 'notifications', 'status'].map(tab => (
+          {['overview', 'users', 'orders', 'payments', 'support', 'notifications', 'status', 'settings'].map(tab => (
             <button 
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -699,7 +729,65 @@ const AdminDashboard = () => {
                        <p className={`text-xl font-black ${textColor}`}>Select a chat to view messages</p>
                     </div>
                   )}
-               </div>
+                </div>
+             </motion.div>
+          )}
+
+          {activeTab === 'settings' && (
+            <motion.div 
+               key="settings"
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className={`p-8 md:p-12 rounded-[2.5rem] border shadow-xl ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-slate-100'}`}
+            >
+               <h3 className={`text-2xl font-black mb-8 ${textColor}`}>Platform Settings</h3>
+               <form onSubmit={updatePlatformSettings} className="space-y-6 max-w-2xl">
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Bank Name</label>
+                     <input 
+                       type="text" 
+                       required
+                       className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                       value={platformSettings.bankName}
+                       onChange={(e) => setPlatformSettings({...platformSettings, bankName: e.target.value})}
+                     />
+                  </div>
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Account Number</label>
+                     <input 
+                       type="text" 
+                       required
+                       className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                       value={platformSettings.accountNumber}
+                       onChange={(e) => setPlatformSettings({...platformSettings, accountNumber: e.target.value})}
+                     />
+                  </div>
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Account Name</label>
+                     <input 
+                       type="text" 
+                       required
+                       className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                       value={platformSettings.accountName}
+                       onChange={(e) => setPlatformSettings({...platformSettings, accountName: e.target.value})}
+                     />
+                  </div>
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Telegram Link</label>
+                     <input 
+                       type="url" 
+                       required
+                       className={`w-full py-4 px-6 rounded-xl border outline-none focus:border-primary transition-all font-bold ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
+                       value={platformSettings.telegramLink}
+                       onChange={(e) => setPlatformSettings({...platformSettings, telegramLink: e.target.value})}
+                     />
+                  </div>
+                  <div className="pt-4">
+                     <button type="submit" className="btn-primary py-4 px-8 rounded-xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs shadow-lg hover:scale-105 transition-transform">
+                        <Settings size={18} /> Update Settings
+                     </button>
+                  </div>
+               </form>
             </motion.div>
           )}
         </AnimatePresence>

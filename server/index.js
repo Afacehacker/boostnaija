@@ -43,6 +43,8 @@ app.use('/api/payments', payments);
 app.use('/api/admin', admin);
 app.use('/api/notifications', notifications);
 app.use('/api/support', support);
+const settings = require('./routes/settingsRoutes');
+app.use('/api/settings', settings);
 
 // Basic route
 app.get('/', (req, res) => {

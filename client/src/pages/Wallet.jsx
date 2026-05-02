@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
@@ -17,9 +17,28 @@ const Wallet = () => {
   const [loading, setLoading] = useState(false);
   const [receipt, setReceipt] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [settings, setSettings] = useState({
+    bankName: 'Rubies micro finance bank',
+    accountNumber: '8025329616',
+    accountName: 'Afeez Salaudeen'
+  });
 
   const isDark = theme === 'dark';
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/settings`);
+        if (res.data) {
+          setSettings(res.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch settings');
+      }
+    };
+    fetchSettings();
+  }, [API_URL]);
 
   const compressImage = (file) => {
     return new Promise((resolve) => {
@@ -146,17 +165,17 @@ const Wallet = () => {
               <div className="relative z-10">
                  <p className={`text-[10px] font-bold uppercase tracking-widest mb-4 ${subTextColor}`}>Our Account Details</p>
                  <div className="space-y-4">
-                    <div>
+                     <div>
                        <p className={`text-[10px] font-bold ${subTextColor} uppercase`}>Bank Name</p>
-                       <h3 className={`text-2xl font-black ${textColor}`}>Paystack Titan</h3>
+                       <h3 className={`text-2xl font-black ${textColor}`}>{settings.bankName || 'Rubies micro finance bank'}</h3>
                     </div>
                     <div>
                        <p className={`text-[10px] font-bold ${subTextColor} uppercase`}>Account Number</p>
-                       <h3 className="text-4xl md:text-5xl font-black text-primary tracking-tighter">9732836416</h3>
+                       <h3 className="text-4xl md:text-5xl font-black text-primary tracking-tighter">{settings.accountNumber || '8025329616'}</h3>
                     </div>
                     <div>
                        <p className={`text-[10px] font-bold ${subTextColor} uppercase`}>Account Name</p>
-                       <h3 className={`text-2xl font-black ${textColor}`}>Salaudeen Afeez</h3>
+                       <h3 className={`text-2xl font-black ${textColor}`}>{settings.accountName || 'Afeez Salaudeen'}</h3>
                     </div>
                  </div>
                  

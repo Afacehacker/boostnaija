@@ -111,7 +111,8 @@ exports.submitManualPayment = async (req, res) => {
       type: 'deposit',
       status: 'pending',
       paymentGateway: 'manual',
-      receipt: receipt // Expecting base64 or URL
+      receipt: receipt, // Expecting base64 or URL
+      reference: `MANUAL_${Date.now()}_${Math.random().toString(36).substring(7)}`
     });
 
     res.status(201).json({ success: true, data: transaction, message: 'Payment submitted for confirmation' });
